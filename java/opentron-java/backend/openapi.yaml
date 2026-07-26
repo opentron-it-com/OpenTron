@@ -1,0 +1,2072 @@
+openapi: 3.0.3
+info:
+  title: OpenTron Backend REST API
+  version: 1.0.0
+  description: Generated OpenAPI specification for all REST endpoints in the OpenTron Java backend controllers.
+servers:
+  - url: "http://localhost:8080"
+    description: Local development
+tags:
+  - name: Health
+  - name: Agent Templates
+  - name: Agents
+  - name: Channels
+  - name: Chat
+  - name: Compose
+  - name: Connectors
+  - name: Demo
+  - name: Management
+  - name: Managed Agents
+  - name: Agent Channels
+  - name: Memory
+  - name: Models
+  - name: Orchestration
+  - name: Projects
+  - name: Project Generation
+  - name: Download
+  - name: Savings
+  - name: Screenshot
+  - name: Speech
+  - name: Telemetry
+  - name: Tools
+  - name: Traces
+  - name: Workflow
+  - name: Jarvis Voice
+  - name: Forwarding
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check
+      operationId: health
+      responses:
+        200:
+          description: Service health
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /actuator/health:
+    get:
+      tags:
+        - Health
+      summary: Actuator health
+      operationId: actuatorHealth
+      responses:
+        200:
+          description: Actuator health
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/agent-templates:
+    get:
+      tags:
+        - Agent Templates
+      summary: List agent templates
+      operationId: listAgentTemplates
+      responses:
+        200:
+          description: Agent templates list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GenericObject"
+  /v1/agent-templates/{id}:
+    get:
+      tags:
+        - Agent Templates
+      summary: Get agent template
+      operationId: getAgentTemplate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Template identifier
+      responses:
+        200:
+          description: Agent template
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/agents/coordinate:
+    post:
+      tags:
+        - Agents
+      summary: "Coordinate multi-agent execution"
+      operationId: coordinateAgents
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: JSON or SSE response depending on stream flag
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+            text/event-stream:
+              schema:
+                type: string
+  /v1/agents/status:
+    get:
+      tags:
+        - Agents
+      summary: Get all agent statuses
+      operationId: getAgentsStatus
+      responses:
+        200:
+          description: Agent statuses
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/agents/task:
+    post:
+      tags:
+        - Agents
+      summary: Submit async task
+      operationId: submitAgentTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        202:
+          description: Task accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/agents/task/{taskId}:
+    get:
+      tags:
+        - Agents
+      summary: Poll async task result
+      operationId: getAgentTask
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Task identifier
+      responses:
+        200:
+          description: Task status or result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/channels:
+    get:
+      tags:
+        - Channels
+      summary: List channels
+      operationId: listChannels
+      responses:
+        200:
+          description: Channels list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GenericObject"
+  /v1/channels/{channelId}/test:
+    post:
+      tags:
+        - Channels
+      summary: Test channel connectivity
+      operationId: testChannel
+      parameters:
+        - name: channelId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Channel identifier
+      responses:
+        200:
+          description: Connectivity test result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/channels/{channelId}/disconnect:
+    post:
+      tags:
+        - Channels
+      summary: Disconnect channel
+      operationId: disconnectChannel
+      parameters:
+        - name: channelId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Channel identifier
+      responses:
+        200:
+          description: Disconnect result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/chat/completions:
+    post:
+      tags:
+        - Chat
+      summary: Chat completions
+      operationId: chatCompletions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Chat completion result or stream
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+            text/event-stream:
+              schema:
+                type: string
+  /v1/compose:
+    get:
+      tags:
+        - Compose
+      summary: List compositions
+      operationId: listCompositions
+      responses:
+        200:
+          description: Composition list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GenericObject"
+  /v1/compose/{name}:
+    get:
+      tags:
+        - Compose
+      summary: Get composition
+      operationId: getComposition
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Composition name
+      responses:
+        200:
+          description: Composition details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/compose/run:
+    post:
+      tags:
+        - Compose
+      summary: Run composition
+      operationId: runComposition
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Run result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/compose/bench:
+    post:
+      tags:
+        - Compose
+      summary: Benchmark composition
+      operationId: benchComposition
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Benchmark result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/compose/deploy:
+    post:
+      tags:
+        - Compose
+      summary: Deploy composition
+      operationId: deployComposition
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Deploy result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/compose/stop:
+    post:
+      tags:
+        - Compose
+      summary: Stop composition
+      operationId: stopComposition
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Stop result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/compose/status:
+    get:
+      tags:
+        - Compose
+      summary: Composition status
+      operationId: compositionStatus
+      responses:
+        200:
+          description: Current status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/connectors:
+    get:
+      tags:
+        - Connectors
+      summary: List connectors
+      operationId: listConnectors
+      responses:
+        200:
+          description: Connectors list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/connectors/{connectorId}:
+    get:
+      tags:
+        - Connectors
+      summary: Get connector
+      operationId: getConnector
+      parameters:
+        - name: connectorId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Connector identifier
+      responses:
+        200:
+          description: Connector details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/connectors/{connectorId}/connect:
+    post:
+      tags:
+        - Connectors
+      summary: Connect connector
+      operationId: connectConnector
+      parameters:
+        - name: connectorId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Connector identifier
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Connection result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/connectors/{connectorId}/disconnect:
+    post:
+      tags:
+        - Connectors
+      summary: Disconnect connector
+      operationId: disconnectConnector
+      parameters:
+        - name: connectorId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Connector identifier
+      responses:
+        200:
+          description: Disconnect result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/connectors/{connectorId}/sync:
+    get:
+      tags:
+        - Connectors
+      summary: Get connector sync status
+      operationId: getConnectorSync
+      parameters:
+        - name: connectorId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Connector identifier
+      responses:
+        200:
+          description: Sync status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+    post:
+      tags:
+        - Connectors
+      summary: Trigger connector sync
+      operationId: triggerConnectorSync
+      parameters:
+        - name: connectorId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Connector identifier
+      responses:
+        200:
+          description: Sync trigger result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/connectors/{connectorId}/oauth/start:
+    get:
+      tags:
+        - Connectors
+      summary: Start OAuth flow
+      operationId: startConnectorOAuth
+      parameters:
+        - name: connectorId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Connector identifier
+      responses:
+        200:
+          description: OAuth start page
+          content:
+            text/html:
+              schema:
+                type: string
+  /v1/connectors/{connectorId}/oauth/callback:
+    get:
+      tags:
+        - Connectors
+      summary: OAuth callback
+      operationId: connectorOAuthCallback
+      parameters:
+        - name: connectorId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Connector identifier
+        - name: code
+          in: query
+          required: false
+          schema:
+            type: string
+          description: OAuth authorization code
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+          description: OAuth state
+        - name: error
+          in: query
+          required: false
+          schema:
+            type: string
+          description: OAuth error code
+      responses:
+        200:
+          description: OAuth callback response
+          content:
+            text/html:
+              schema:
+                type: string
+  /v1/demo/generate-react-auth:
+    post:
+      tags:
+        - Demo
+      summary: Generate demo React auth project
+      operationId: generateReactAuthDemo
+      responses:
+        200:
+          description: Generated project payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/recommended-model:
+    get:
+      tags:
+        - Management
+      summary: Get recommended model
+      operationId: recommendedModel
+      responses:
+        200:
+          description: Recommended model
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/approvals/pending:
+    get:
+      tags:
+        - Management
+      summary: List pending approvals
+      operationId: pendingApprovals
+      responses:
+        200:
+          description: Pending approvals
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/info:
+    get:
+      tags:
+        - Management
+      summary: Get backend info
+      operationId: backendInfo
+      responses:
+        200:
+          description: Service info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/analytics/identity:
+    get:
+      tags:
+        - Management
+      summary: Get analytics identity
+      operationId: analyticsIdentity
+      responses:
+        200:
+          description: Analytics identity configuration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/tools/{toolName}/credentials:
+    post:
+      tags:
+        - Management
+      summary: Save tool credentials
+      operationId: saveToolCredentials
+      parameters:
+        - name: toolName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Tool name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Credential save result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/managed-agents:
+    get:
+      tags:
+        - Managed Agents
+      summary: List managed agents
+      operationId: listManagedAgents
+      responses:
+        200:
+          description: Managed agents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GenericObject"
+    post:
+      tags:
+        - Managed Agents
+      summary: Create managed agent
+      operationId: createManagedAgent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Created managed agent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/managed-agents/{agentId}:
+    get:
+      tags:
+        - Managed Agents
+      summary: Get managed agent
+      operationId: getManagedAgent
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+      responses:
+        200:
+          description: Managed agent details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+    patch:
+      tags:
+        - Managed Agents
+      summary: Update managed agent
+      operationId: updateManagedAgent
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Updated managed agent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+    delete:
+      tags:
+        - Managed Agents
+      summary: Delete managed agent
+      operationId: deleteManagedAgent
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+      responses:
+        200:
+          description: Delete result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/managed-agents/{agentId}/run:
+    post:
+      tags:
+        - Managed Agents
+      summary: Run managed agent
+      operationId: runManagedAgent
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        202:
+          description: Run accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/managed-agents/{agentId}/pause:
+    post:
+      tags:
+        - Managed Agents
+      summary: Pause managed agent
+      operationId: pauseManagedAgent
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+      responses:
+        200:
+          description: Pause result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/managed-agents/{agentId}/resume:
+    post:
+      tags:
+        - Managed Agents
+      summary: Resume managed agent
+      operationId: resumeManagedAgent
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+      responses:
+        200:
+          description: Resume result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/managed-agents/{agentId}/recover:
+    post:
+      tags:
+        - Managed Agents
+      summary: Recover managed agent
+      operationId: recoverManagedAgent
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+      responses:
+        200:
+          description: Recover result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/managed-agents/{agentId}/ask:
+    post:
+      tags:
+        - Managed Agents
+      summary: Ask managed agent
+      operationId: askManagedAgent
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Answer payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/managed-agents/{agentId}/state:
+    get:
+      tags:
+        - Managed Agents
+      summary: Get agent state
+      operationId: managedAgentState
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+      responses:
+        200:
+          description: Agent state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/managed-agents/{agentId}/messages:
+    get:
+      tags:
+        - Managed Agents
+      summary: Get agent messages
+      operationId: managedAgentMessages
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+      responses:
+        200:
+          description: Agent messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GenericObject"
+  /v1/managed-agents/{agentId}/tasks:
+    get:
+      tags:
+        - Managed Agents
+      summary: Get agent tasks
+      operationId: managedAgentTasks
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+      responses:
+        200:
+          description: Agent tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GenericObject"
+  /v1/managed-agents/{agentId}/learning/trigger:
+    post:
+      tags:
+        - Managed Agents
+      summary: Trigger agent learning
+      operationId: triggerManagedAgentLearning
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+      responses:
+        200:
+          description: Learning trigger result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/managed-agents/{agentId}/learning:
+    get:
+      tags:
+        - Managed Agents
+      summary: Get learning status
+      operationId: managedAgentLearning
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+      responses:
+        200:
+          description: Learning status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/managed-agents/{agentId}/traces:
+    get:
+      tags:
+        - Managed Agents
+      summary: Get agent traces
+      operationId: managedAgentTraces
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+      responses:
+        200:
+          description: Agent traces
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GenericObject"
+  /v1/managed-agents/{agentId}/channels:
+    get:
+      tags:
+        - Agent Channels
+      summary: List agent channel bindings
+      operationId: listAgentChannelBindings
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+      responses:
+        200:
+          description: Channel bindings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GenericObject"
+    post:
+      tags:
+        - Agent Channels
+      summary: Create agent channel binding
+      operationId: createAgentChannelBinding
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Created channel binding
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/managed-agents/{agentId}/channels/bind:
+    post:
+      tags:
+        - Agent Channels
+      summary: Bind channel alias
+      operationId: bindAgentChannel
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Bind result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/managed-agents/{agentId}/channels/{bindingId}:
+    delete:
+      tags:
+        - Agent Channels
+      summary: Delete channel binding
+      operationId: deleteAgentChannelBinding
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+        - name: bindingId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Binding identifier
+      responses:
+        200:
+          description: Delete binding result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/memory/stats:
+    get:
+      tags:
+        - Memory
+      summary: Memory stats
+      operationId: memoryStats
+      responses:
+        200:
+          description: Memory statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/memory/config:
+    get:
+      tags:
+        - Memory
+      summary: Memory config
+      operationId: memoryConfig
+      responses:
+        200:
+          description: Memory configuration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/memory/store:
+    post:
+      tags:
+        - Memory
+      summary: Store memory item
+      operationId: storeMemory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Store result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/memory/search:
+    post:
+      tags:
+        - Memory
+      summary: Search memory
+      operationId: searchMemory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GenericObject"
+  /v1/memory/index:
+    post:
+      tags:
+        - Memory
+      summary: Index file into memory
+      operationId: indexMemoryFile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Indexing result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/memory/agent/{agentId}:
+    get:
+      tags:
+        - Memory
+      summary: Get agent memory
+      operationId: agentMemory
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+          description: Maximum records
+      responses:
+        200:
+          description: Agent memory
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GenericObject"
+  /v1/memory/stats/detailed:
+    get:
+      tags:
+        - Memory
+      summary: Detailed memory stats
+      operationId: memoryStatsDetailed
+      responses:
+        200:
+          description: Detailed memory statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/models:
+    get:
+      tags:
+        - Models
+      summary: List models
+      operationId: listModels
+      responses:
+        200:
+          description: Model list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/models/pull:
+    post:
+      tags:
+        - Models
+      summary: Pull model
+      operationId: pullModel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        202:
+          description: Pull job accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/models/pull/{jobId}:
+    get:
+      tags:
+        - Models
+      summary: Get pull job status
+      operationId: getPullJob
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Pull job identifier
+      responses:
+        200:
+          description: Pull job status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/models/pull/{jobId}/events:
+    get:
+      tags:
+        - Models
+      summary: Stream pull job events
+      operationId: pullJobEvents
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Pull job identifier
+      responses:
+        200:
+          description: Pull job event stream
+          content:
+            text/event-stream:
+              schema:
+                type: string
+  /v1/orchestrate/task:
+    post:
+      tags:
+        - Orchestration
+      summary: Orchestrate one task
+      operationId: orchestrateTask
+      parameters:
+        - name: task
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Task description
+        - name: context
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Optional task context
+      responses:
+        200:
+          description: Orchestration result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/orchestrate/batch:
+    post:
+      tags:
+        - Orchestration
+      summary: Orchestrate batch tasks
+      operationId: orchestrateBatch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Batch orchestration result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/orchestrate/agents:
+    get:
+      tags:
+        - Orchestration
+      summary: List orchestration agents
+      operationId: orchestrationAgents
+      responses:
+        200:
+          description: Available agents
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/orchestrate/domains:
+    get:
+      tags:
+        - Orchestration
+      summary: List orchestration domains
+      operationId: orchestrationDomains
+      responses:
+        200:
+          description: Available domains
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/download/react-auth:
+    get:
+      tags:
+        - Download
+      summary: Download React auth ZIP
+      operationId: downloadReactAuth
+      responses:
+        200:
+          description: ZIP archive
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  /v1/download/spring-api:
+    get:
+      tags:
+        - Download
+      summary: Download Spring API ZIP
+      operationId: downloadSpringApi
+      responses:
+        200:
+          description: ZIP archive
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  /v1/generate/project:
+    post:
+      tags:
+        - Project Generation
+      summary: Generate complete project
+      operationId: generateProject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Generation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/generate/templates:
+    get:
+      tags:
+        - Project Generation
+      summary: List templates
+      operationId: listProjectTemplates
+      responses:
+        200:
+          description: Template list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/generate/from-template:
+    post:
+      tags:
+        - Project Generation
+      summary: Generate from template
+      operationId: generateFromTemplate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Generated project result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/generate/frameworks:
+    get:
+      tags:
+        - Project Generation
+      summary: List frameworks
+      operationId: listFrameworks
+      responses:
+        200:
+          description: Framework list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/generate/code:
+    post:
+      tags:
+        - Project Generation
+      summary: Generate code snippet
+      operationId: generateCode
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Generated code payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/projects/create:
+    post:
+      tags:
+        - Projects
+      summary: Create project
+      operationId: createProject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Created project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/projects:
+    get:
+      tags:
+        - Projects
+      summary: List projects
+      operationId: listProjects
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+          description: Maximum records
+      responses:
+        200:
+          description: Projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GenericObject"
+  /v1/projects/{projectId}:
+    get:
+      tags:
+        - Projects
+      summary: Get project
+      operationId: getProject
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Project identifier
+      responses:
+        200:
+          description: Project detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/savings:
+    get:
+      tags:
+        - Savings
+      summary: Cost savings
+      operationId: costSavings
+      responses:
+        200:
+          description: Savings calculation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/analyze-screenshot:
+    post:
+      tags:
+        - Screenshot
+      summary: Analyze screenshot
+      operationId: analyzeScreenshot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Screenshot analysis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/speech/health:
+    get:
+      tags:
+        - Speech
+      summary: Speech health
+      operationId: speechHealth
+      responses:
+        200:
+          description: Speech service health
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/speech/transcribe:
+    post:
+      tags:
+        - Speech
+      summary: Transcribe audio
+      operationId: transcribeAudio
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+                - file
+      responses:
+        200:
+          description: Transcription result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/speech/synthesize:
+    post:
+      tags:
+        - Speech
+      summary: Synthesize speech
+      operationId: synthesizeSpeech
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Synthesis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/speech/voices:
+    get:
+      tags:
+        - Speech
+      summary: List speech voices
+      operationId: listSpeechVoices
+      responses:
+        200:
+          description: Voice list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/telemetry/energy:
+    get:
+      tags:
+        - Telemetry
+      summary: Energy telemetry
+      operationId: telemetryEnergy
+      responses:
+        200:
+          description: Energy metrics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/telemetry/stats:
+    get:
+      tags:
+        - Telemetry
+      summary: Telemetry stats
+      operationId: telemetryStats
+      responses:
+        200:
+          description: Statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/telemetry/track:
+    post:
+      tags:
+        - Telemetry
+      summary: Track telemetry event
+      operationId: telemetryTrack
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Tracking result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/telemetry/reset:
+    post:
+      tags:
+        - Telemetry
+      summary: Reset telemetry
+      operationId: telemetryReset
+      responses:
+        200:
+          description: Reset result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/tools:
+    get:
+      tags:
+        - Tools
+      summary: List tools
+      operationId: listTools
+      responses:
+        200:
+          description: Tool list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/tools/{name}:
+    get:
+      tags:
+        - Tools
+      summary: Get tool
+      operationId: getTool
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Tool name
+      responses:
+        200:
+          description: Tool details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/traces:
+    get:
+      tags:
+        - Traces
+      summary: List traces
+      operationId: listTraces
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+          description: Maximum records
+      responses:
+        200:
+          description: Trace list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GenericObject"
+  /v1/traces/{traceId}:
+    get:
+      tags:
+        - Traces
+      summary: Get trace
+      operationId: getTrace
+      parameters:
+        - name: traceId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Trace identifier
+      responses:
+        200:
+          description: Trace details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/traces/agent/{agentId}:
+    get:
+      tags:
+        - Traces
+      summary: Get traces by agent
+      operationId: getAgentTraces
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Agent identifier
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+          description: Maximum records
+      responses:
+        200:
+          description: Agent traces
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GenericObject"
+  /v1/workflow:
+    get:
+      tags:
+        - Workflow
+      summary: List workflows
+      operationId: listWorkflows
+      responses:
+        200:
+          description: Workflow list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GenericObject"
+  /v1/workflow/run:
+    post:
+      tags:
+        - Workflow
+      summary: Run workflow
+      operationId: runWorkflow
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Workflow run result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/workflow/status:
+    get:
+      tags:
+        - Workflow
+      summary: Workflow status
+      operationId: workflowStatus
+      responses:
+        200:
+          description: Workflow status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/jarvis/health:
+    get:
+      tags:
+        - Jarvis Voice
+      summary: Jarvis voice health
+      operationId: jarvisHealth
+      responses:
+        200:
+          description: Jarvis voice health
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/jarvis/speak:
+    post:
+      tags:
+        - Jarvis Voice
+      summary: Speak text with Jarvis voice
+      operationId: jarvisSpeak
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Speech synthesis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/jarvis/voice-profile:
+    get:
+      tags:
+        - Jarvis Voice
+      summary: Get voice profile
+      operationId: jarvisVoiceProfile
+      responses:
+        200:
+          description: Voice profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/jarvis/batch-speak:
+    post:
+      tags:
+        - Jarvis Voice
+      summary: Batch speak
+      operationId: jarvisBatchSpeak
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        200:
+          description: Batch synthesis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+  /v1/{proxyPath}:
+    get:
+      tags:
+        - Forwarding
+      summary: Forward GET to engine
+      operationId: forwardGet
+      parameters:
+        - name: proxyPath
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Forwarded path segment after /v1
+      responses:
+        200:
+          description: Forwarded response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+    post:
+      tags:
+        - Forwarding
+      summary: Forward POST to engine
+      operationId: forwardPost
+      parameters:
+        - name: proxyPath
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Forwarded path segment after /v1
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Forwarded response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+    put:
+      tags:
+        - Forwarding
+      summary: Forward PUT to engine
+      operationId: forwardPut
+      parameters:
+        - name: proxyPath
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Forwarded path segment after /v1
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Forwarded response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+    delete:
+      tags:
+        - Forwarding
+      summary: Forward DELETE to engine
+      operationId: forwardDelete
+      parameters:
+        - name: proxyPath
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Forwarded path segment after /v1
+      responses:
+        200:
+          description: Forwarded response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+    patch:
+      tags:
+        - Forwarding
+      summary: Forward PATCH to engine
+      operationId: forwardPatch
+      parameters:
+        - name: proxyPath
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Forwarded path segment after /v1
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: Forwarded response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+    options:
+      tags:
+        - Forwarding
+      summary: Forward OPTIONS to engine
+      operationId: forwardOptions
+      parameters:
+        - name: proxyPath
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Forwarded path segment after /v1
+      responses:
+        200:
+          description: Forwarded response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericObject"
+components:
+  schemas:
+    GenericObject:
+      type: object
+      additionalProperties: true
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      additionalProperties: true

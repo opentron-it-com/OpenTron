@@ -1,0 +1,43 @@
+name: Auto Update OpenAPI
+
+on:
+  push:
+    paths:
+      - "java/opentron-java/backend/src/main/java/**/*.java"
+      - "java/opentron-java/backend/scripts/generate-openapi-specs.mjs"
+      - ".github/workflows/openapi-auto-update.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate-openapi:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Generate OpenAPI specs
+        run: node java/opentron-java/backend/scripts/generate-openapi-specs.mjs
+
+      - name: Commit updated specs
+        run: |
+          if git diff --quiet -- java/opentron-java/backend/openapi.json java/opentron-java/backend/openapi.yaml; then
+            echo "No OpenAPI changes detected."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add java/opentron-java/backend/openapi.json java/opentron-java/backend/openapi.yaml
+          git commit -m "chore(openapi): auto-update backend specs"
+          git push
