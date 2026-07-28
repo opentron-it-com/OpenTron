@@ -144,6 +144,11 @@ export interface SetupStatus {
   source?: 'ollama' | 'custom';
 }
 
+export interface BackendBootStatus {
+  state: 'starting' | 'ready' | 'failed';
+  message: string | null;
+}
+
 export async function getSetupStatus(): Promise<SetupStatus | null> {
   if (!isTauri()) return null;
   try {
@@ -246,8 +251,7 @@ export async function fetchServerInfo(): Promise<ServerInfo> {
 export async function checkHealth(): Promise<boolean> {
   if (isTauri()) {
     try {
-      await tauriInvoke('check_health', { apiUrl: getBase() });
-      return true;
+      return await tauriInvoke<boolean>('check_health', { apiUrl: getBase() });
     } catch {
       return false;
     }
@@ -262,6 +266,16 @@ export async function checkHealth(): Promise<boolean> {
   };
   if (await probe('/health')) return true;
   return probe('/v1/connectors');
+}
+
+export async function getBackendBootStatus(): Promise<BackendBootStatus | null> {
+  if (!isTauri()) return null;
+  try {
+    const { invoke } = await import('@tauri-apps/api/core');
+    return await invoke<BackendBootStatus>('get_backend_boot_status');
+  } catch {
+    return null;
+  }
 }
 
 export async function fetchEnergy(): Promise<unknown> {
