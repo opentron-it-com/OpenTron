@@ -94,7 +94,7 @@ The code is publicly visible for evaluation and review purposes only.
 No rights are granted to use, modify, distribute, or commercialize
 this software without explicit written permission from the author.
 
-© 2026 Roxana-Cornelia Ciorica. All Rights Reserved.
+© 2026 Ermis & Roxana. All Rights Reserved.
 
 
 <a href='https://www.sideprojectors.com/project/86097/opentron-ai-multi-agent-orchestrator' alt='OpenTron AI multi-agent orchestrator is for sale at @SideProjectors'><img style='position:fixed;z-index:1000;top:-5px; right: 20px; border: 0;' src='https://www.sideprojectors.com/img/badges/badge_2_red.png' alt='OpenTron AI multi-agent orchestrator is sale at @SideProjectors'></a>
