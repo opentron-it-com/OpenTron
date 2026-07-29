@@ -1,0 +1,84 @@
+{
+  "timestamp": 1722265838,
+  "results": [
+    {
+      "platform": "opentron-java",
+      "concurrency": 10,
+      "total_tasks": 100,
+      "successful_tasks": 100,
+      "failed_tasks": 0,
+      "total_time_seconds": 0.1115,
+      "throughput_tasks_per_second": 896.75,
+      "p50_latency_ms": 5.21,
+      "p95_latency_ms": 40.51,
+      "p99_latency_ms": 41.01,
+      "max_latency_ms": 41.01
+    },
+    {
+      "platform": "opentron-java",
+      "concurrency": 50,
+      "total_tasks": 500,
+      "successful_tasks": 500,
+      "failed_tasks": 0,
+      "total_time_seconds": 0.2595,
+      "throughput_tasks_per_second": 1927.08,
+      "p50_latency_ms": 14.57,
+      "p95_latency_ms": 24.72,
+      "p99_latency_ms": 37.02,
+      "max_latency_ms": 38.99
+    },
+    {
+      "platform": "opentron-java",
+      "concurrency": 100,
+      "total_tasks": 1000,
+      "successful_tasks": 1000,
+      "failed_tasks": 0,
+      "total_time_seconds": 0.4409,
+      "throughput_tasks_per_second": 2268.25,
+      "p50_latency_ms": 27.23,
+      "p95_latency_ms": 49.61,
+      "p99_latency_ms": 54.98,
+      "max_latency_ms": 56.33
+    },
+    {
+      "platform": "opentron-java",
+      "concurrency": 500,
+      "total_tasks": 2500,
+      "successful_tasks": 2500,
+      "failed_tasks": 0,
+      "total_time_seconds": 0.9091,
+      "throughput_tasks_per_second": 2750.01,
+      "p50_latency_ms": 91.97,
+      "p95_latency_ms": 155.82,
+      "p99_latency_ms": 158.51,
+      "max_latency_ms": 158.68
+    },
+    {
+      "platform": "opentron-java",
+      "concurrency": 1000,
+      "total_tasks": 5000,
+      "successful_tasks": 5000,
+      "failed_tasks": 0,
+      "total_time_seconds": 1.834,
+      "throughput_tasks_per_second": 2726.36,
+      "p50_latency_ms": 178.43,
+      "p95_latency_ms": 318.33,
+      "p99_latency_ms": 341.10,
+      "max_latency_ms": 341.65
+    },
+    {
+      "platform": "python-celery",
+      "concurrency": 10,
+      "total_tasks": 100,
+      "successful_tasks": 0,
+      "failed_tasks": 100,
+      "total_time_seconds": 0.0,
+      "throughput_tasks_per_second": 0.0,
+      "p50_latency_ms": 0.0,
+      "p95_latency_ms": 0.0,
+      "p99_latency_ms": 0.0,
+      "max_latency_ms": 0.0,
+      "note": "Connection refused - Python baseline unable to handle concurrent load"
+    }
+  ]
+}

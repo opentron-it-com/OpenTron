@@ -1,0 +1,177 @@
+version: '3.9'
+
+services:
+  opentron-backend:
+    build:
+      context: ..
+      dockerfile: java/opentron-java/backend/Dockerfile
+    container_name: opentron-benchmark
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=benchmark
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:testdb
+      - SPRING_DATASOURCE_DRIVERCLASSNAME=org.h2.Driver
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+      - SPRING_FLYWAY_ENABLED=false
+      - ENGINE_HOST=http://localhost:11434
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,metrics,prometheus
+      - SERVER_PORT=8080
+    networks:
+      - benchmark-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis-benchmark
+    ports:
+      - "6379:6379"
+    networks:
+      - benchmark-network
+    command: redis-server --appendonly no --maxmemory 512mb
+
+  python-api:
+    build:
+      context: ./python_baseline
+      dockerfile: Dockerfile
+    container_name: python-api-benchmark
+    ports:
+      - "8001:8000"
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+    networks:
+      - benchmark-network
+    command: >
+      uvicorn app:app 
+      --host 0.0.0.0 
+      --port 8000 
+      --workers 4
+
+  python-worker-1:
+    build:
+      context: ./python_baseline
+      dockerfile: Dockerfile
+    container_name: python-worker-1
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+    networks:
+      - benchmark-network
+    command: >
+      celery -A app.celery_app worker 
+      -l info 
+      -c 10
+      --queues default
+
+  python-worker-2:
+    build:
+      context: ./python_baseline
+      dockerfile: Dockerfile
+    container_name: python-worker-2
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+    networks:
+      - benchmark-network
+    command: >
+      celery -A app.celery_app worker 
+      -l info 
+      -c 10
+      --queues default
+
+  python-worker-3:
+    build:
+      context: ./python_baseline
+      dockerfile: Dockerfile
+    container_name: python-worker-3
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+    networks:
+      - benchmark-network
+    command: >
+      celery -A app.celery_app worker 
+      -l info 
+      -c 10
+      --queues default
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres-benchmark
+    environment:
+      POSTGRES_DB: opentron
+      POSTGRES_USER: opentron
+      POSTGRES_PASSWORD: opentron_benchmark
+    ports:
+      - "5433:5432"
+    networks:
+      - benchmark-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus-benchmark
+    ports:
+      - "9090:9090"
+    networks:
+      - benchmark-network
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=24h'
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana-benchmark
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - benchmark-network
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      - prometheus
+
+  load-generator:
+    image: python:3.11-slim
+    container_name: load-generator
+    working_dir: /benchmark
+    volumes:
+      - ./:/benchmark
+    networks:
+      - benchmark-network
+    depends_on:
+      - opentron-backend
+      - python-api
+    command: >
+      bash -c "
+        pip install -q aiohttp &&
+        sleep 30 &&
+        python load_generator.py
+      "
+
+networks:
+  benchmark-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  prometheus_data:
+  grafana_data:
