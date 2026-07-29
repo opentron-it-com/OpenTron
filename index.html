@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenTron — High-Density AI Agent Engine</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            900: '#134e4a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased selection:bg-teal-500 selection:text-white relative">
+
+    <!-- COMPACT TOP-RIGHT SIDEPROJECTORS SALE BADGE -->
+    <div class="fixed top-3 right-4 z-50">
+        <a href="https://www.sideprojectors.com/project/86097/opentron-ai-multi-agent-orchestrator" 
+           target="_blank" 
+           rel="noopener" 
+           class="block transition-transform hover:scale-75 opacity-90 hover:opacity-100 shadow-lg">
+            <img src="https://www.sideprojectors.com/img/badges/badge_2_red.png" 
+                 alt="OpenTron AI multi-agent orchestrator is sale at SideProjectors" 
+                 class="w-7 sm:w-8 h-auto rounded border border-red-500/30">
+        </a>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+
+        <!-- HERO SECTION -->
+        <header class="text-center space-y-6 pt-4">
+            <div class="flex justify-center">
+                <img src="assets/OpenTron_Horizontal_Logo_DarkTheme.png" alt="OpenTron Logo" class="h-20 sm:h-24 w-auto object-contain">
+            </div>
+            
+            <div class="space-y-2 max-w-3xl mx-auto">
+                <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white">
+                    Personal AI, On Personal Device
+                </h1>
+                <p class="text-lg sm:text-xl text-teal-400 font-medium italic">
+                    How We Built a High-Density AI Agent Engine on a $1000 Budget While Silicon Valley Burns Millions
+                </p>
+            </div>
+        </header>
+
+        <hr class="border-slate-800">
+
+        <!-- MANIFESTO / INTRO -->
+        <section class="prose prose-invert max-w-none text-slate-300 space-y-4 text-base sm:text-lg leading-relaxed">
+            <p>
+                We didn't have a multi-million dollar venture capital check, a corporate credit card to throw at AWS, or a team of 50 developers.
+            </p>
+            <p>
+                What we had was a <strong class="text-white font-semibold">$1000 server budget</strong> and a refusal to accept the sloppy, unoptimized engineering choices that have taken over modern AI backend development.
+            </p>
+            <p>
+                While elite tech spaces are pushing copy-paste Python scripts wrapped in layers of cloud infrastructure to run multi-agent systems, we built <strong class="text-teal-400 font-bold">OpenTron</strong>: a production-grade, highly concurrent, stateful AI multi-agent architecture running natively on <strong class="text-white">Java 21</strong>, <strong class="text-white">Spring Boot</strong>, and <strong class="text-white">PostgreSQL</strong>.
+            </p>
+            <p class="text-slate-400 text-sm italic">
+                This document explains the architecture, design rationale, and benchmarks behind the system.
+            </p>
+        </section>
+
+        <hr class="border-slate-800">
+
+        <!-- ARCHITECTURE & CORE MECHANICS -->
+        <section class="space-y-8">
+            <div class="border-l-4 border-teal-500 pl-4">
+                <h2 class="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
+                    <span>🏗️</span> Architecture & Core Mechanics
+                </h2>
+                <p class="text-slate-400 text-sm mt-1">OpenTron shifts multi-agent workflows from fragile prototyping to deterministic operation using a decoupled, highly concurrent architecture.</p>
+            </div>
+
+            <!-- Architecture SVG Image -->
+            <div class="bg-slate-900/60 p-4 sm:p-6 rounded-2xl border border-slate-800 flex justify-center shadow-inner">
+                <img src="assets/architecture-overview.svg" alt="Architecture Overview" class="max-w-full h-auto rounded">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+                <!-- Core Flaw -->
+                <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-800 space-y-3">
+                    <h3 class="text-xl font-bold text-rose-400 flex items-center gap-2">
+                        <span>1.</span> The Core Flaw of the Mainstream AI Hype Stack
+                    </h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        The current trend is to build AI agents with Python runtimes such as FastAPI. As systems scale into production, several architectural issues emerge:
+                    </p>
+                    <ul class="space-y-2 text-sm text-slate-400 list-disc list-inside">
+                        <li><strong class="text-slate-200">Process Multiplication</strong> – Scaling concurrency often requires additional workers.</li>
+                        <li><strong class="text-slate-200">Infrastructure Sprawl</strong> – Queues, brokers, schedulers, and worker clusters become mandatory.</li>
+                        <li><strong class="text-slate-200">Operational Cost Growth</strong> – More infrastructure means more memory, more CPUs, and larger monthly bills.</li>
+                    </ul>
+                </div>
+
+                <!-- OpenTron's Approach -->
+                <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-800 space-y-3">
+                    <h3 class="text-xl font-bold text-teal-400 flex items-center gap-2">
+                        <span>2.</span> OpenTron's Approach
+                    </h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Instead of layering services around runtime limitations, OpenTron is built directly on the modern JVM. By pairing:
+                    </p>
+                    <ul class="space-y-2 text-sm text-slate-400 list-disc list-inside">
+                        <li><strong class="text-slate-200">Java 21 Virtual Threads</strong></li>
+                        <li><strong class="text-slate-200">Spring Boot</strong></li>
+                        <li><strong class="text-slate-200">PostgreSQL</strong></li>
+                        <li><strong class="text-slate-200">Strongly Typed Contracts</strong></li>
+                    </ul>
+                    <p class="text-slate-300 text-sm pt-2">
+                        we achieve massive concurrency while keeping operational complexity low.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-slate-800">
+
+        <!-- ECONOMIC REALITY COMPARISON -->
+        <section class="space-y-8">
+            <div class="border-l-4 border-teal-500 pl-4">
+                <h2 class="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
+                    <span>💰</span> Economic Reality: Hardware Saturation vs Infrastructure Expansion
+                </h2>
+            </div>
+
+            <!-- Economic SVG Image -->
+            <div class="bg-slate-900/60 p-4 sm:p-6 rounded-2xl border border-slate-800 flex justify-center shadow-inner">
+                <img src="assets/economic-comparison.svg" alt="Economic Comparison" class="max-w-full h-auto rounded">
+            </div>
+
+            <!-- Comparison Table -->
+            <div class="bg-slate-900/50 rounded-xl border border-slate-800 overflow-hidden">
+                <div class="p-4 bg-slate-900 border-b border-slate-800">
+                    <h3 class="font-bold text-white text-base">📉 Cost & Performance Architecture Comparison</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm text-slate-300">
+                        <thead class="bg-slate-950 text-slate-400 uppercase font-semibold text-xs border-b border-slate-800">
+                            <tr>
+                                <th class="py-3 px-4 sm:px-6 w-1/4">Economic & Operational Metric</th>
+                                <th class="py-3 px-4 sm:px-6 w-3/8 text-rose-400">The Python Crash Loop <br><span class="text-xs font-normal text-slate-500">(LangChain / CrewAI / FastAPI)</span></th>
+                                <th class="py-3 px-4 sm:px-6 w-3/8 text-teal-400">OpenTron Value Engineering <br><span class="text-xs font-normal text-slate-500">(Java 21 / Spring Boot)</span></th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60">
+                            <tr>
+                                <td class="py-4 px-4 sm:px-6 font-semibold text-white">Memory Utilization Profile</td>
+                                <td class="py-4 px-4 sm:px-6 text-slate-400"><strong class="text-rose-400 block mb-1">Hardware Meltdown:</strong> Every new worker process forks the runtime environment, cloning dependencies and leaking RAM fast.</td>
+                                <td class="py-4 px-4 sm:px-6 text-slate-300"><strong class="text-teal-400 block mb-1">High Density:</strong> 10,000+ tasks share a single JVM footprint. Memory scales predictably in kilobytes, not gigabytes.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-4 sm:px-6 font-semibold text-white">API & I/O Latency Handling</td>
+                                <td class="py-4 px-4 sm:px-6 text-slate-400"><strong class="text-rose-400 block mb-1">Paid Compute Wastage:</strong> Idle execution pipelines lock up OS threads while waiting for LLM token responses, burning paid CPU cycles doing absolutely nothing.</td>
+                                <td class="py-4 px-4 sm:px-6 text-slate-300"><strong class="text-teal-400 block mb-1">Zero-Waste Allocation:</strong> Virtual threads unmount during network waits. The underlying hardware switches to other compute tasks instantly.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-4 sm:px-6 font-semibold text-white">Background Threading Cost</td>
+                                <td class="py-4 px-4 sm:px-6 text-slate-400"><strong class="text-rose-400 block mb-1">Infrastructure Tax:</strong> Forcing Python to handle background tasks requires separate billing for Redis brokers and Celery instances.</td>
+                                <td class="py-4 px-4 sm:px-6 text-slate-300"><strong class="text-teal-400 block mb-1">In-Process Consolidation:</strong> Complete agent orchestration, job queues, and task dispatching run concurrently inside one single container.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-4 sm:px-6 font-semibold text-white">Hardware Lifecycle ROI</td>
+                                <td class="py-4 px-4 sm:px-6 text-slate-400"><strong class="text-rose-400 block mb-1">Premature Upgrades:</strong> Server nodes hit early limits due to process scaling overhead, requiring immediate horizontal cluster upgrades.</td>
+                                <td class="py-4 px-4 sm:px-6 text-slate-300"><strong class="text-teal-400 block mb-1">Total Hardware Saturation:</strong> Pushes cheap, low-spec hardware to 100% computational capacity before needing to scale out.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-4 sm:px-6 font-semibold text-white">Development Lifecycle Value</td>
+                                <td class="py-4 px-4 sm:px-6 text-slate-400"><strong class="text-rose-400 block mb-1">Fragile Maintenance:</strong> Dynamic runtime type errors manifest midway through complex, expensive production runs.</td>
+                                <td class="py-4 px-4 sm:px-6 text-slate-300"><strong class="text-teal-400 block mb-1">Compile-Time Safety:</strong> Strong static typing catches execution formatting issues <em>before</em> running expensive LLM API queries.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-slate-800">
+
+        <!-- DASHBOARD & BENCHMARKS -->
+        <section class="space-y-8">
+            <div class="border-l-4 border-teal-500 pl-4">
+                <h2 class="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
+                    <span>⚡</span> Empirical Benchmark Analysis
+                </h2>
+                <p class="text-slate-400 text-sm mt-1">Real-world performance under simulated 500ms LLM API task latency.</p>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800">
+                    <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Peak Throughput</div>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <span class="text-2xl sm:text-3xl font-extrabold text-teal-400">2,750</span>
+                        <span class="text-xs text-slate-500">tasks/sec</span>
+                    </div>
+                    <p class="mt-1 text-xs text-slate-400">Single JVM process</p>
+                </div>
+
+                <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800">
+                    <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Success Rate</div>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <span class="text-2xl sm:text-3xl font-extrabold text-emerald-400">100%</span>
+                        <span class="text-xs font-mono text-emerald-400/80">9.1k / 9.1k</span>
+                    </div>
+                    <p class="mt-1 text-xs text-slate-400">Zero task failures</p>
+                </div>
+
+                <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800">
+                    <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Median Latency (p50)</div>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <span class="text-2xl sm:text-3xl font-extrabold text-blue-400">178.4</span>
+                        <span class="text-xs text-slate-500">ms</span>
+                    </div>
+                    <p class="mt-1 text-xs text-slate-400">At 1,000 concurrency</p>
+                </div>
+
+                <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800">
+                    <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Python Baseline</div>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <span class="text-2xl sm:text-3xl font-extrabold text-rose-500">0%</span>
+                        <span class="text-xs font-semibold text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20">FAILED</span>
+                    </div>
+                    <p class="mt-1 text-xs text-slate-400">Connection timeouts</p>
+                </div>
+            </div>
+
+            <!-- Interactive Charts Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Throughput Chart -->
+                <div class="bg-slate-900/60 p-6 rounded-xl border border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-semibold text-white">Throughput Scaling Profile</h3>
+                        <p class="text-xs text-slate-400">Tasks executed per second vs worker concurrency</p>
+                    </div>
+                    <div class="mt-4 relative h-56">
+                        <canvas id="throughputChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Latency Profile Chart -->
+                <div class="bg-slate-900/60 p-6 rounded-xl border border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-semibold text-white">Latency Distribution (p50, p95, p99)</h3>
+                        <p class="text-xs text-slate-400">Response time scaling in milliseconds</p>
+                    </div>
+                    <div class="mt-4 relative h-56">
+                        <canvas id="latencyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Benchmark Execution Table -->
+            <div class="bg-slate-900/60 rounded-xl border border-slate-800 overflow-hidden">
+                <div class="p-4 border-b border-slate-800">
+                    <h3 class="font-bold text-white text-base">Benchmark Execution Matrix</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm text-slate-300">
+                        <thead class="bg-slate-950 text-xs uppercase font-semibold text-slate-400 border-b border-slate-800">
+                            <tr>
+                                <th class="py-3 px-4">Concurrency</th>
+                                <th class="py-3 px-4">Total Tasks</th>
+                                <th class="py-3 px-4">Throughput</th>
+                                <th class="py-3 px-4">p50</th>
+                                <th class="py-3 px-4">p95</th>
+                                <th class="py-3 px-4">p99</th>
+                                <th class="py-3 px-4">OpenTron</th>
+                                <th class="py-3 px-4">Python</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/50 font-mono text-xs">
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-3.5 px-4 font-semibold text-white">10</td>
+                                <td class="py-3.5 px-4">100</td>
+                                <td class="py-3.5 px-4 text-teal-400 font-semibold">896.75 /s</td>
+                                <td class="py-3.5 px-4">5.21 ms</td>
+                                <td class="py-3.5 px-4">40.51 ms</td>
+                                <td class="py-3.5 px-4">41.01 ms</td>
+                                <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">100% PASS</span></td>
+                                <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded text-[10px] font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20">0% FAIL</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-3.5 px-4 font-semibold text-white">50</td>
+                                <td class="py-3.5 px-4">500</td>
+                                <td class="py-3.5 px-4 text-teal-400 font-semibold">1,927.08 /s</td>
+                                <td class="py-3.5 px-4">14.57 ms</td>
+                                <td class="py-3.5 px-4">24.72 ms</td>
+                                <td class="py-3.5 px-4">37.02 ms</td>
+                                <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">100% PASS</span></td>
+                                <td class="py-3.5 px-4"><span class="text-rose-400">UNRESPONSIVE</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-3.5 px-4 font-semibold text-white">100</td>
+                                <td class="py-3.5 px-4">1,000</td>
+                                <td class="py-3.5 px-4 text-teal-400 font-semibold">2,268.25 /s</td>
+                                <td class="py-3.5 px-4">27.23 ms</td>
+                                <td class="py-3.5 px-4">49.61 ms</td>
+                                <td class="py-3.5 px-4">54.98 ms</td>
+                                <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">100% PASS</span></td>
+                                <td class="py-3.5 px-4"><span class="text-rose-400">UNRESPONSIVE</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-3.5 px-4 font-semibold text-white">500</td>
+                                <td class="py-3.5 px-4">2,500</td>
+                                <td class="py-3.5 px-4 text-teal-400 font-semibold">2,750.01 /s</td>
+                                <td class="py-3.5 px-4">91.97 ms</td>
+                                <td class="py-3.5 px-4">155.82 ms</td>
+                                <td class="py-3.5 px-4">158.51 ms</td>
+                                <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">100% PASS</span></td>
+                                <td class="py-3.5 px-4"><span class="text-rose-400">UNRESPONSIVE</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/30">
+                                <td class="py-3.5 px-4 font-semibold text-white">1000</td>
+                                <td class="py-3.5 px-4">5,000</td>
+                                <td class="py-3.5 px-4 text-teal-400 font-semibold">2,726.36 /s</td>
+                                <td class="py-3.5 px-4">178.43 ms</td>
+                                <td class="py-3.5 px-4">318.33 ms</td>
+                                <td class="py-3.5 px-4">341.10 ms</td>
+                                <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">100% PASS</span></td>
+                                <td class="py-3.5 px-4"><span class="text-rose-400">UNRESPONSIVE</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRODUCT HUNT WIDGET CARD -->
+        <section class="flex justify-center pt-4">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full shadow-lg text-center space-y-4">
+                <div class="flex items-center justify-center gap-4">
+                    <img src="https://ph-files.imgix.net/b41c776c-56a1-4598-b479-23e244a7eeb0.png?auto=compress,format&codec=mozjpeg&cs=strip&fit=crop&h=80&w=80" 
+                         alt="OpenTron" 
+                         class="w-14 h-14 rounded-lg object-cover">
+                    <div class="text-left">
+                        <h4 class="font-bold text-lg text-white">OpenTron</h4>
+                        <p class="text-slate-400 text-xs">High-Density AI Agent Engine</p>
+                    </div>
+                </div>
+                <a href="https://www.producthunt.com/products/opentron?embed=true&utm_source=embed&utm_medium=post_embed" 
+                   target="_blank" 
+                   rel="noopener" 
+                   class="inline-block w-full py-2.5 px-4 bg-orange-600 hover:bg-orange-500 text-white font-semibold text-sm rounded-lg transition">
+                    Check it out on Product Hunt →
+                </a>
+            </div>
+        </section>
+
+        <!-- FOOTER & LICENSE -->
+        <footer class="border-t border-slate-800 pt-8 text-center text-xs text-slate-500 space-y-4">
+            <div class="space-y-2">
+                <h5 class="font-semibold text-slate-400 uppercase tracking-wider text-[11px]">📄 License</h5>
+                <p class="max-w-xl mx-auto leading-relaxed">
+                    This repository is source-available.<br>
+                    The code is publicly visible for evaluation and review purposes only.<br>
+                    No rights are granted to use, modify, distribute, or commercialize this software without explicit written permission from the author.
+                </p>
+            </div>
+            
+            <p class="text-slate-400 font-medium">© 2026 Ermis & Roxana. All Rights Reserved.</p>
+            
+            <div class="pt-4 border-t border-slate-900">
+                <a href="https://github.com/open-tron-ai/OpenTron/discussions" target="_blank" class="text-teal-400 hover:text-teal-300 transition underline underline-offset-4">
+                    This site is open source. Improve this page.
+                </a>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- JS CHARTS SCRIPT -->
+    <script>
+        const concurrencyLabels = ['10', '50', '100', '500', '1000'];
+
+        // Throughput Chart
+        const ctxThroughput = document.getElementById('throughputChart').getContext('2d');
+        new Chart(ctxThroughput, {
+            type: 'line',
+            data: {
+                labels: concurrencyLabels,
+                datasets: [{
+                    label: 'Throughput (tasks/sec)',
+                    data: [896.75, 1927.08, 2268.25, 2750.01, 2726.36],
+                    borderColor: '#14b8a6',
+                    backgroundColor: 'rgba(20, 184, 166, 0.12)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.3,
+                    pointBackgroundColor: '#14b8a6',
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: '#1e293b' }, ticks: { color: '#64748b' } },
+                    y: { grid: { color: '#1e293b' }, ticks: { color: '#64748b' } }
+                }
+            }
+        });
+
+        // Latency Chart
+        const ctxLatency = document.getElementById('latencyChart').getContext('2d');
+        new Chart(ctxLatency, {
+            type: 'line',
+            data: {
+                labels: concurrencyLabels,
+                datasets: [
+                    {
+                        label: 'p50 (ms)',
+                        data: [5.21, 14.57, 27.23, 91.97, 178.43],
+                        borderColor: '#60a5fa',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointRadius: 3
+                    },
+                    {
+                        label: 'p95 (ms)',
+                        data: [40.51, 24.72, 49.61, 155.82, 318.33],
+                        borderColor: '#f59e0b',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointRadius: 3
+                    },
+                    {
+                        label: 'p99 (ms)',
+                        data: [41.01, 37.02, 54.98, 158.51, 341.10],
+                        borderColor: '#f43f5e',
+                        borderDash: [4, 4],
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointRadius: 3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } },
+                scales: {
+                    x: { grid: { color: '#1e293b' }, ticks: { color: '#64748b' } },
+                    y: { grid: { color: '#1e293b' }, ticks: { color: '#64748b' } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
