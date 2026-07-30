@@ -6,11 +6,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.opentron.core.Utils;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Implement ``Tron doctor`` - verify setup and diagnose issues.
@@ -28,6 +25,7 @@ public class DoctorCmd extends BaseCommand {
         }
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void execute(String[] args) throws Exception {
         loadConfig();

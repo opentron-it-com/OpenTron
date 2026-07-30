@@ -11,6 +11,7 @@ import io.opentron.cli.data.ModelRegistry;
  * Internal command that sets up core systems.
  */
 public class Bootstrap extends BaseCommand {
+    @SuppressWarnings("unused")
     private DataManager dataManager;
     private MemoryStore memory;
     private VaultStore vault;
@@ -27,6 +28,7 @@ public class Bootstrap extends BaseCommand {
         }
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void execute(String[] args) throws Exception {
         boolean verbose = false;

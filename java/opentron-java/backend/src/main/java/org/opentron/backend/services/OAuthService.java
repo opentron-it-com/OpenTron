@@ -26,6 +26,7 @@ public class OAuthService {
         this.webClient = WebClient.create();
     }
 
+    @SuppressWarnings("rawtypes")
     public OAuthToken exchangeCode(String connectorId, String provider, String tokenEndpoint, String clientId, String clientSecret, String code, String redirectUri) {
         try {
             WebClient.RequestBodySpec req = webClient.post().uri(tokenEndpoint).contentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -36,6 +37,7 @@ public class OAuthService {
             if (clientSecret != null) inserter = inserter.with("client_secret", clientSecret);
 
             Mono<Map> resp = req.body(inserter).retrieve().bodyToMono(Map.class);
+            @SuppressWarnings("unchecked")
             Map<String, Object> tokenResp = resp.block();
             if (tokenResp == null) throw new RuntimeException("empty token response");
             return fromCodeExchange(connectorId, provider, tokenResp);

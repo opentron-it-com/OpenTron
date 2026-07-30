@@ -1,15 +1,11 @@
 package org.opentron.backend.websocket;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.socket.WebSocketHandler;
-import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import org.opentron.backend.util.EngineRouting;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -24,7 +20,7 @@ public class ReactiveChatWebSocketHandler implements WebSocketHandler {
 
     private final WebClient webClient;
     private final EngineRouting engineRouting;
-    private final ObjectMapper mapper = new ObjectMapper();
+    
 
     public ReactiveChatWebSocketHandler(WebClient webClient, EngineRouting engineRouting) {
         this.webClient = webClient;

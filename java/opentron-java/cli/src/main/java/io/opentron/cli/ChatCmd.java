@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class ChatCmd {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -19,6 +18,7 @@ public class ChatCmd {
     private static String currentEngine = "ollama";
     private static List<Message> conversationHistory = new ArrayList<>();
 
+    @SuppressWarnings("unused")
     public static void main(String[] args) {
         String engineKey = null;
         String modelName = null;

@@ -41,6 +41,7 @@ public class ModelsController {
         this.pullService = pullService;
     }
 
+    @SuppressWarnings("unchecked")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<String>> listModels() {
         String targetPath = engineRouting.translateRequestPath("/v1/models");
@@ -108,6 +109,7 @@ public class ModelsController {
 
         PullJob job = pullService.createJob(modelName);
         // start pull asynchronously
+        @SuppressWarnings("unchecked")
         Map<String, Object> payload = objectMapper.convertValue(request, Map.class);
         pullService.runPull(job, payload);
 

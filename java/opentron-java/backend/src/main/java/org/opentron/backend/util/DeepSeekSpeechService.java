@@ -7,15 +7,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Base64;
 import java.util.Map;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 @Service
 public class DeepSeekSpeechService {
@@ -25,6 +22,7 @@ public class DeepSeekSpeechService {
     @Value("${deepseek.api-key:}")
     private String deepseekApiKey;
 
+    @SuppressWarnings("unused")
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final HttpClient httpClient = HttpClient.newHttpClient();
     private static final String DEEPSEEK_API_URL = "https://api.deepseek.com/v1";
@@ -76,7 +74,6 @@ public class DeepSeekSpeechService {
 
         // Mock transcription for now (DeepSeek doesn't have native STT)
         // In production, integrate with Whisper API or similar
-        long startTime = System.currentTimeMillis();
         
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("text", "Hello world");
@@ -96,8 +93,6 @@ public class DeepSeekSpeechService {
         if (deepseekApiKey == null || deepseekApiKey.isBlank()) {
             throw new IllegalStateException("DeepSeek API key not configured");
         }
-
-        long startTime = System.currentTimeMillis();
 
         // For now, return a simple response indicating TTS is ready
         // In production, this could use a dedicated TTS service

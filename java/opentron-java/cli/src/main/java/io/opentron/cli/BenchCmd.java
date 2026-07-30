@@ -2,9 +2,7 @@ package io.opentron.cli;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import io.opentron.core.Utils;
 
 /**
  * Implement ``Tron bench`` - run inference benchmarks.
@@ -54,6 +52,7 @@ public class BenchCmd extends BaseCommand {
         }
     }
 
+    @SuppressWarnings("unused")
     private void runBenchmark(String[] args) throws Exception {
         loadConfig();
         

@@ -146,6 +146,7 @@ public class ChatController {
 
         WebClient.RequestBodySpec reqSpecBase = requestBuilder;
 
+        @SuppressWarnings("deprecation")
         Mono<ResponseEntity<?>> result = resolvedPayload.flatMap(resolved -> reqSpecBase.bodyValue(resolved).exchange())
             .flatMap(response -> buildResponseMono(response, stream, servletRequest))
             .onErrorResume(e -> {
@@ -462,6 +463,7 @@ public class ChatController {
         });
     }
 
+    @SuppressWarnings("unchecked")
     private Mono<ResponseEntity<?>> buildResponseMono(ClientResponse response, boolean stream, HttpServletRequest request) {
         HttpHeaders responseHeaders = new HttpHeaders();
         response.headers().asHttpHeaders().forEach((name, values) -> {

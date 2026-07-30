@@ -2,7 +2,6 @@ package io.opentron.cli;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.opentron.core.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +37,6 @@ public abstract class BaseCommand {
      */
     protected void loadConfig() {
         try {
-            // TODO: Load from ~/.OpenTron/config.toml
             config.put("engine", "ollama");
             config.put("model", "qwen2.5:7b");
             config.put("host", "localhost");

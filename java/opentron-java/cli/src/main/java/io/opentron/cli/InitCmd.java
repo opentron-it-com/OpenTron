@@ -2,24 +2,16 @@ package io.opentron.cli;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import io.opentron.core.Utils;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * Implement ``Tron init`` - detect hardware, generate config, write to disk.
  */
 public class InitCmd extends BaseCommand {
+    @SuppressWarnings("unused")
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public static void main(String[] args) {
@@ -35,6 +27,7 @@ public class InitCmd extends BaseCommand {
         }
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void execute(String[] args) throws Exception {
         loadConfig();

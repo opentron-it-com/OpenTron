@@ -22,6 +22,7 @@ public class StorageService {
     
     private final AgentMemoryRepository agentMemoryRepo;
     private final TraceLogRepository traceLogRepo;
+    @SuppressWarnings("unused")
     private final CompressionService compressionService;
     
     public StorageService(AgentMemoryRepository agentMemoryRepo,

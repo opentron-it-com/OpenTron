@@ -60,6 +60,7 @@ public class HuggingFaceService {
     /**
      * Chat via HF Inference API (cloud)
      */
+    @SuppressWarnings("deprecation")
     private Map<String, Object> chatCompletionViaApi(String model, List<Map<String, String>> messages) throws Exception {
         if (HF_API_TOKEN == null || HF_API_TOKEN.isEmpty()) {
             throw new RuntimeException("HF_API_TOKEN not set. Get one from https://huggingface.co/settings/tokens");
@@ -106,6 +107,7 @@ public class HuggingFaceService {
     /**
      * Chat via local HF server (FastAPI)
      */
+    @SuppressWarnings("deprecation")
     private Map<String, Object> chatCompletionLocal(String model, List<Map<String, String>> messages) throws Exception {
         String actualModel = model != null && !model.isEmpty() ? model : DEFAULT_LOCAL_MODEL;
         logger.info("Using local HF with model: {}", actualModel);
@@ -255,7 +257,7 @@ public class HuggingFaceService {
     /**
      * List available models (from local cache or HF Hub)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "deprecation" })
     public Mono<List<String>> listModels() {
         return Mono.fromCallable(() -> {
             logger.info("Listing available models (mode: {})", HF_MODE);

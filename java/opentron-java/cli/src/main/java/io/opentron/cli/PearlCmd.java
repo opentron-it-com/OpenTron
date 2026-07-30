@@ -85,7 +85,6 @@ public class PearlCmd extends BaseCommand {
 
     private void createPearl(String[] subArgs) {
         String title = subArgs[0];
-        String content = subArgs.length > 1 ? subArgs[1] : "No content";
         
         println("Creating pearl: " + title);
         println();

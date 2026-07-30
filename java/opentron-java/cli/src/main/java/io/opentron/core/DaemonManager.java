@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.Scanner;
 
 /**
@@ -218,10 +217,11 @@ public class DaemonManager {
                 // Windows: use tasklist
                 ProcessBuilder pb = new ProcessBuilder("tasklist", "/FI", "PID eq " + pid);
                 Process p = pb.start();
-                Scanner s = new Scanner(p.getInputStream()).useDelimiter("\\A");
-                String result = s.hasNext() ? s.next() : "";
-                p.waitFor();
-                return result.contains(String.valueOf(pid));
+                try (Scanner s = new Scanner(p.getInputStream()).useDelimiter("\\A")) {
+                    String result = s.hasNext() ? s.next() : "";
+                    p.waitFor();
+                    return result.contains(String.valueOf(pid));
+                }
             } else {
                 // Unix: use ps
                 ProcessBuilder pb = new ProcessBuilder("ps", "-p", String.valueOf(pid));

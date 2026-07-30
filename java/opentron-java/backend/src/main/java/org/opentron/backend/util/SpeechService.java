@@ -47,6 +47,7 @@ public class SpeechService {
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     private Map<String, Object> checkOllamaHealth() {
         Map<String, Object> result = new LinkedHashMap<>();
         try {
@@ -140,6 +141,7 @@ public class SpeechService {
         throw new UnsupportedOperationException("Ollama transcription not yet implemented. Use OpenAI backend.");
     }
 
+    @SuppressWarnings("unchecked")
     private Map<String, Object> transcribeWithOpenAI(MultipartFile audioFile) throws Exception {
         if (openaiKey == null || openaiKey.isBlank()) {
             throw new IllegalStateException("OpenAI API key not configured");

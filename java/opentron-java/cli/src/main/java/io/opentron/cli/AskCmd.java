@@ -12,6 +12,7 @@ import io.opentron.cli.data.ModelRegistry;
 public class AskCmd extends BaseCommand {
     private TelemetryStore telemetry;
     private MemoryStore memory;
+    @SuppressWarnings("unused")
     private ModelRegistry models;
 
     public static void main(String[] args) throws Exception {

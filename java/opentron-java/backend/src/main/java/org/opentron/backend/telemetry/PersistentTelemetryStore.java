@@ -31,6 +31,7 @@ public class PersistentTelemetryStore {
         this.data = loadFromDisk();
     }
 
+    @SuppressWarnings("unchecked")
     private Map<String, Long> loadFromDisk() {
         try {
             Files.createDirectories(Paths.get(DATA_DIR));

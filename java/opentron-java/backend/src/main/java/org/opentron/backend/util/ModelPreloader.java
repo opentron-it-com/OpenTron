@@ -33,6 +33,7 @@ public class ModelPreloader implements CommandLineRunner {
         }).start();
     }
 
+    @SuppressWarnings({ "deprecation", "unused" })
     private void warmupModel() {
         logger.info("Starting async model warmup...");
         try {

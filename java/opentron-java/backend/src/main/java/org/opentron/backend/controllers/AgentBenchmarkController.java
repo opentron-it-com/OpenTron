@@ -1,10 +1,7 @@
 package org.opentron.backend.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-import org.opentron.backend.agents.AgentService;
-import org.opentron.backend.agents.Agent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.concurrent.*;
@@ -18,9 +15,6 @@ public class AgentBenchmarkController {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentBenchmarkController.class);
     
-    @Autowired(required = false)
-    private AgentService agentService;
-
     @PostMapping("/query/blocking")
     public ResponseEntity<Map<String, Object>> queryAgentBlocking(
             @RequestParam(required = false, defaultValue = "test prompt") String prompt,

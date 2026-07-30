@@ -34,6 +34,7 @@ public class OllamaCliService {
                lower.startsWith("openrouter/") || lower.startsWith("anthropic/");
     }
 
+    @SuppressWarnings({ "deprecation", "unchecked" })
     private Map<String, Object> callOllama(String requestedModel, String promptStr) throws Exception {
         logger.info("Calling Ollama: {}", requestedModel);
 
@@ -161,7 +162,7 @@ public class OllamaCliService {
     // for all Ollama interactions. If streaming is reintroduced later,
     // re-add a carefully tested `chatCompletionStream` implementation.
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "deprecation" })
     public Mono<List<String>> listModels() {
         return (Mono<List<String>>) (Object) Mono.fromCallable(() -> {
             try {

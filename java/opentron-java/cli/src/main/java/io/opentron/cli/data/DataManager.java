@@ -2,8 +2,6 @@ package io.opentron.cli.data;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
@@ -17,9 +15,13 @@ public class DataManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String CONFIG_DIR = System.getProperty("user.home") + "/.OpenTron";
     private static final String CONFIG_FILE = CONFIG_DIR + "/config.toml";
+    @SuppressWarnings("unused")
     private static final String MEMORY_DB = CONFIG_DIR + "/memory.db";
+    @SuppressWarnings("unused")
     private static final String VAULT_FILE = CONFIG_DIR + "/vault.json";
+    @SuppressWarnings("unused")
     private static final String TELEMETRY_DB = CONFIG_DIR + "/telemetry.db";
+    @SuppressWarnings("unused")
     private static final String DAEMON_LOG = CONFIG_DIR + "/daemon.log";
 
     /**

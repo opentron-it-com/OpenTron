@@ -37,6 +37,7 @@ public class ForwardingController {
         this.engineRouting = engineRouting;
     }
 
+    @SuppressWarnings("deprecation")
     @RequestMapping(path = "/**")
     public Mono<ResponseEntity<Flux<DataBuffer>>> proxy(HttpServletRequest request) {
         try {

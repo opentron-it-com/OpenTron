@@ -99,7 +99,9 @@ public class ScreenshotAnalyzer {
     /**
      * Call Ollama LLaVA API directly
      */
+    @SuppressWarnings("unchecked")
     private Map<String, Object> callLLaVAAPI(String imageBase64, String question, int timeoutSeconds) throws Exception {
+        @SuppressWarnings("deprecation")
         java.net.URL url = new java.net.URL("http://127.0.0.1:11434/api/chat");
         java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");

@@ -1,7 +1,5 @@
 package io.opentron.cli;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Implement ``Tron registry`` - manage model registry.

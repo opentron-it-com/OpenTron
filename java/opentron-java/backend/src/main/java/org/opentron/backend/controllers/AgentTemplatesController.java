@@ -91,7 +91,8 @@ public class AgentTemplatesController {
      * GET /v1/agent-templates/{id}
      * Get a specific agent template
      */
-    @GetMapping("/agent-templates/{id}")
+    @SuppressWarnings("unchecked")
+@GetMapping("/agent-templates/{id}")
     public Map<String, Object> getAgentTemplate(@PathVariable String id) {
         Map<String, Object> templates = Map.ofEntries(
                 Map.entry("template-backend", Map.of(

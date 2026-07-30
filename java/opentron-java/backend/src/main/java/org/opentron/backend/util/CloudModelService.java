@@ -208,6 +208,7 @@ public class CloudModelService {
             return List.of();
         }
 
+        @SuppressWarnings("deprecation")
         java.net.URL url = new java.net.URL("https://openrouter.ai/api/v1/models");
         java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -252,6 +253,7 @@ public class CloudModelService {
             return List.of();
         }
 
+        @SuppressWarnings("deprecation")
         java.net.URL url = new java.net.URL("https://generativelanguage.googleapis.com/v1/models?key=" + apiKey);
         java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -292,6 +294,7 @@ public class CloudModelService {
     private Map<String, Object> callOpenAI(String model, String apiKey, List<Map<String, String>> messages) throws Exception {
         logger.info("Calling OpenAI: {}", model);
         
+        @SuppressWarnings("deprecation")
         java.net.URL url = new java.net.URL("https://api.openai.com/v1/chat/completions");
         java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
@@ -338,7 +341,6 @@ public class CloudModelService {
             List<Map<String, Object>> choices = (List<Map<String, Object>>) response.get("choices");
             if (choices == null || choices.isEmpty()) throw new RuntimeException("No response from OpenAI");
             
-            @SuppressWarnings("unchecked")
             Map<String, Object> choice = choices.get(0);
             @SuppressWarnings("unchecked")
             Map<String, Object> messageObj = (Map<String, Object>) choice.get("message");
@@ -408,9 +410,11 @@ public class CloudModelService {
     /**
      * Call Anthropic (Claude) API
      */
+    @SuppressWarnings("unchecked")
     private Map<String, Object> callAnthropic(String model, String apiKey, List<Map<String, String>> messages) throws Exception {
         logger.info("Calling Anthropic (Claude): {}", model);
         
+        @SuppressWarnings("deprecation")
         java.net.URL url = new java.net.URL("https://api.anthropic.com/v1/messages");
         java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
@@ -446,11 +450,9 @@ public class CloudModelService {
             String line;
             while ((line = br.readLine()) != null) sb.append(line);
             
-            @SuppressWarnings("unchecked")
             Map<String, Object> response = objectMapper.readValue(sb.toString(), Map.class);
             
             // Extract content
-            @SuppressWarnings("unchecked")
             List<Map<String, Object>> content_blocks = (List<Map<String, Object>>) response.get("content");
             String content = "";
             if (content_blocks != null && !content_blocks.isEmpty()) {
@@ -505,6 +507,7 @@ public class CloudModelService {
         
         // Google API expects the full model name (e.g., gemini-2.5-pro)
         // Do NOT strip the gemini- prefix
+        @SuppressWarnings("deprecation")
         java.net.URL url = new java.net.URL("https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey);
         java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
@@ -565,7 +568,6 @@ public class CloudModelService {
             List<Map<String, Object>> candidates = (List<Map<String, Object>>) response.get("candidates");
             String content = "";
             if (candidates != null && !candidates.isEmpty()) {
-                @SuppressWarnings("unchecked")
                 Map<String, Object> candidate = candidates.get(0);
                 @SuppressWarnings("unchecked")
                 Map<String, Object> contentObj = (Map<String, Object>) candidate.get("content");
@@ -665,6 +667,7 @@ public class CloudModelService {
             logger.debug("OpenRouter key prefix: {}...", apiKey.substring(0, Math.min(10, apiKey.length())));
         }
         
+        @SuppressWarnings("deprecation")
         java.net.URL url = new java.net.URL("https://openrouter.ai/api/v1/chat/completions");
         java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
@@ -717,7 +720,6 @@ public class CloudModelService {
             List<Map<String, Object>> choices = (List<Map<String, Object>>) response.get("choices");
             if (choices == null || choices.isEmpty()) throw new RuntimeException("No response from OpenRouter");
             
-            @SuppressWarnings("unchecked")
             Map<String, Object> choice = choices.get(0);
             @SuppressWarnings("unchecked")
             Map<String, Object> messageObj = (Map<String, Object>) choice.get("message");

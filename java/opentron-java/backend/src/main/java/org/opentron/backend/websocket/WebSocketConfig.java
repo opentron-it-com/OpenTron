@@ -7,7 +7,6 @@ import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 
-import java.util.Collections;
 import java.util.Map;
 
 @Configuration

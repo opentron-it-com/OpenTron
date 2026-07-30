@@ -132,6 +132,7 @@ public class EngineRouting {
         return resolvedType;
     }
 
+    @SuppressWarnings("deprecation")
     private EngineType detectEngineType() {
         if (engineHost.contains("ollama") || engineHost.contains(":11434") || engineHost.contains("ollama:") ) {
             logger.info("engine.host looks like Ollama: {}", engineHost);

@@ -2,14 +2,12 @@ package io.opentron.cli;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.opentron.cli.data.DataManager;
 import io.opentron.cli.data.TelemetryStore;
 import io.opentron.cli.data.MemoryStore;
 import io.opentron.cli.data.ModelRegistry;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,6 +17,7 @@ public class Ask {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static TelemetryStore telemetry;
     private static MemoryStore memory;
+    @SuppressWarnings("unused")
     private static ModelRegistry models;
 
     public static void main(String[] args) {

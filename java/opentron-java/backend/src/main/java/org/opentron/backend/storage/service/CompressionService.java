@@ -32,6 +32,7 @@ public class CompressionService {
     /**
      * Decompress bytes compressed with Zstd
      */
+    @SuppressWarnings("deprecation")
     public byte[] decompress(byte[] compressedData) {
         if (compressedData == null || compressedData.length == 0) {
             return new byte[0];

@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -15,7 +14,6 @@ import java.net.http.HttpResponse;
 import java.util.Base64;
 import java.util.Map;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 @Service
 public class ElevenLabsSpeechService {
@@ -157,6 +155,7 @@ public class ElevenLabsSpeechService {
     /**
      * List available voices from ElevenLabs
      */
+    @SuppressWarnings("unchecked")
     public Map<String, Object> listVoices() throws Exception {
         if (elevenLabsApiKey == null || elevenLabsApiKey.isBlank()) {
             throw new IllegalStateException("ElevenLabs API key not configured");

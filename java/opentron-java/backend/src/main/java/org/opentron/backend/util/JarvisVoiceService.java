@@ -6,9 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -29,6 +26,7 @@ public class JarvisVoiceService {
      * - Slight British accent (formal)
      * - Calm and confident delivery
      */
+    @SuppressWarnings("unused")
     private static final Map<String, String> JARVIS_VOICE_PARAMS = Map.ofEntries(
         Map.entry("pitch", "0.8"),          // Lower pitch = deeper voice
         Map.entry("speed", "0.9"),          // Slightly slower for clarity

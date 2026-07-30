@@ -59,6 +59,7 @@ public class ManagedAgentsController {
         ));
     }
 
+    @SuppressWarnings("unchecked")
     @PostMapping
     public ResponseEntity<Map<String, Object>> createManagedAgent(@RequestBody org.opentron.backend.dto.ManagedAgentCreateRequest payload) {
         String name = payload.getName() == null ? "New Agent" : payload.getName();

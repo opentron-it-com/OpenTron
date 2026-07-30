@@ -2,12 +2,12 @@ package io.opentron.cli;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 
 /**
  * Implement ``Tron config`` - view and modify configuration.
  */
 public class ConfigCmd extends BaseCommand {
+    @SuppressWarnings("unused")
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public static void main(String[] args) {
@@ -54,7 +54,7 @@ public class ConfigCmd extends BaseCommand {
             String value = args[2];
             config.put(key, value);
             println("✓ Set " + key + " = " + value);
-            // TODO: Persist to config file
+            
         } else if ("list".equals(subcommand)) {
             println("Available configuration keys:");
             for (String key : config.keySet()) {

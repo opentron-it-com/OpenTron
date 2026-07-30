@@ -230,6 +230,7 @@ public class SkillBasedOrchestrator {
     /**
      * Execute agents in parallel and aggregate results
      */
+    @SuppressWarnings("unchecked")
     private Map<String, Object> executeParallel(Map<String, List<AgentSkillMatch>> selectedAgents,
                                                  String taskDescription, String context) {
         Map<String, Object> results = new LinkedHashMap<>();

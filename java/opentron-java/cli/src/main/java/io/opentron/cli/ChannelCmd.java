@@ -2,7 +2,6 @@ package io.opentron.cli;
 
 import io.opentron.cli.data.DataManager;
 import io.opentron.cli.data.TelemetryStore;
-import java.util.Date;
 
 /**
  * Implement ``Tron channel`` - manage communication channels.
