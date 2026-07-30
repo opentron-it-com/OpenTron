@@ -84,7 +84,7 @@ we achieve massive concurrency while keeping operational complexity low.
 | **Development Lifecycle Value** | **Fragile Maintenance:** Dynamic runtime type errors manifest midway through complex, expensive production runs. | **Compile-Time Safety:** Strong static typing catches execution formatting issues *before* running expensive LLM API queries. |
 
 ---
-
+Proof of data can be found here: [/benchmarks/OpenTron_Benchmark_Executive_Summary.pdf](https://github.com/open-tron-ai/OpenTron/blob/main/benchmarks/OpenTron_Benchmark_Executive_Summary.pdf)
 ## 📄 License
 
 This repository is source-available.
