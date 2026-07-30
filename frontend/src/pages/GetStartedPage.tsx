@@ -416,7 +416,7 @@ function SelfHostedView({ onDismiss }: { onDismiss?: () => void }) {
           <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
             Clone and install (Python 3.10+ required):
           </p>
-          <CodeBlock code={"git clone https://github.com/open-Tron/OpenTron.git\ncd OpenTron\nuv sync"} />
+          <CodeBlock code={"git clone https://github.com/open-Tron/OpenTron.git\ncd OpenTron\n"} />
           <p className="text-xs mt-1" style={{ color: 'var(--color-text-secondary)' }}>
             Then get started:
           </p>
