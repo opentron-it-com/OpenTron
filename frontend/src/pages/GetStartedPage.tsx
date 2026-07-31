@@ -204,7 +204,7 @@ function HostedView({ onDismiss }: { onDismiss?: () => void }) {
         <Sparkles size={32} />
       </div>
       <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--color-text)' }}>
-        OpenTron
+        ERMIS AI Orchestrator
       </h1>
       <p
         className="text-sm mb-6 leading-relaxed max-w-md mx-auto"

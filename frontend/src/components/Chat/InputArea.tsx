@@ -181,7 +181,7 @@ export function InputArea() {
 
     let convId = activeId;
     if (!convId) {
-      convId = createConversation(useTronMode ? 'Tron' : selectedModel);
+      convId = createConversation(useTronMode ? 'Ermis' : selectedModel);
     }
 
     const priorMessages = useAppStore.getState().messages;
@@ -234,7 +234,7 @@ export function InputArea() {
           timestamp: Date.now(),
           level: 'info',
           category: 'chat',
-          message: `Tron: "${content.slice(0, 80)}${content.length > 80 ? '...' : ''}"`,
+          message: `Ermis: "${content.slice(0, 80)}${content.length > 80 ? '...' : ''}"`,
         });
 
         try {
@@ -327,12 +327,12 @@ export function InputArea() {
             timestamp: Date.now(),
             level: 'info',
             category: 'chat',
-            message: `Tron coordinated: ${parsed.agentsUsed.join(', ') || 'specialist agents'} in ${parsed.elapsedMs}ms`,
+            message: `Ermis coordinated: ${parsed.agentsUsed.join(', ') || 'specialist agents'} in ${parsed.elapsedMs}ms`,
           });
 
           const telemetry: MessageTelemetry = {
             engine: 'tron-coordinator',
-            model_id: `Tron (${parsed.agentsUsed.join(', ') || 'specialist agents'})`,
+            model_id: `Ermis (${parsed.agentsUsed.join(', ') || 'specialist agents'})`,
             total_ms: parsed.elapsedMs,
             ttft_ms: ttftMs,
           };
@@ -761,10 +761,10 @@ export function InputArea() {
               border: `1px solid ${useTronMode ? 'var(--color-accent)' : 'var(--color-border)'}`,
               color: useTronMode ? 'var(--color-accent)' : 'var(--color-text-tertiary)',
             }}
-            title={useTronMode ? 'Tron Coordinator: on' : 'Tron Coordinator: off'}
+            title={useTronMode ? 'Ermis Coordinator: on' : 'Ermis Coordinator: off'}
           >
             <Bot size={12} />
-            Tron Coordinator
+            Ermis Coordinator
           </button>
           <button
             type="button"

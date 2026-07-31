@@ -77,7 +77,7 @@ export function AvatarOrb({ state, onClick }: AvatarOrbProps) {
 
       {/* Main orb - TRON image */}
       <div className={`orb-inner ${isAnimating ? 'pulse' : ''}`}>
-        <img src="/tron.png" alt="TRON Avatar" className="tron-image" />
+        <img src="/ermis.png" alt="Ermis Avatar" className="tron-image" />
       </div>
 
       {/* Outer rotating ring */}

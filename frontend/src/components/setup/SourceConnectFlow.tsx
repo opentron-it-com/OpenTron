@@ -241,7 +241,7 @@ function LocalPanel({
         }}
       >
         <strong>System Settings</strong> → Privacy &amp; Security → Full Disk Access →
-        enable OpenTron
+        enable ERMIS AI Orchestrator  → Restart the app
       </div>
       <button
         onClick={() => onConnect({})}

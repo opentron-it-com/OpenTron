@@ -16,15 +16,15 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'Tron',
-        short_name: 'Tron',
-        description: 'On-device AI assistant',
+        name: 'ERMIS AI Orchestrator',
+        short_name: 'ERMIS',
+        description: 'On-device AI orchestrator',
         theme_color: '#161618',
         background_color: '#161618',
         display: 'standalone',
         icons: [
-          { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
-          { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'ermis-192x192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'ermis-512x512.png', sizes: '512x512', type: 'image/png' },
         ],
       },
       workbox: {

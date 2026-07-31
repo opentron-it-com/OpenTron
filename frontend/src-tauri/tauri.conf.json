@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "OpenTron",
+  "productName": "ERMIS AI Orchestrator",
   "version": "1.0.1",
   "identifier": "com.opentron.desktop",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "OpenTron",
+        "title": "ERMIS AI Orchestrator",
         "width": 1280,
         "height": 800,
         "minWidth": 900,
