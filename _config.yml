@@ -1,1 +1,6 @@
 title: OpenTron
+url: "https://opentron.it.com"
+baseurl: ""
+
+# Common theme config for logos:
+logo: /assets/tron.png
