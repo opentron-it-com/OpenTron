@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://open-tron-ai.github.io/OpenTron/sitemap.xml
+Sitemap: https://opentron.it.com/sitemap.xml
