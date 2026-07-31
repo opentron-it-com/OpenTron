@@ -1,9 +1,9 @@
 site_name: OpenTron
-site_url: https://open-tron-ai.github.io/OpenTron/
+site_url: https://opentron.it.com/
 site_description: Personal AI, On Personal Devices
 site_author: OpenTron Contributors
-repo_url: https://github.com
-repo_name: open-tron-ai/OpenTron
+repo_url: https://github.com/opentron-it-com/OpenTron
+repo_name: opentron-it-com/OpenTron
 edit_uri: edit/main/docs/
 
 copyright: Copyright &copy; 2026 OpenTron Contributors
@@ -72,4 +72,4 @@ extra:
     default: v1.0.0
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com
+      link: https://github.com/opentron-it-com/OpenTron
