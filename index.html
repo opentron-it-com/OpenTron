@@ -1,15 +1,25 @@
+---
+---
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Open Tron | The Open-Source AI Orchestrator for Everyone</title>
     <meta name="description" content="Open Tron is a stateful multi-agent AI orchestrator. Run autonomous workflows easily with Open Tron on Java. Download the open-source code on GitHub.">
-    <link rel="canonical" href="https://opentron.it.com" />
+    <link rel="canonical" href="https://opentron.it.com/" />
+    
+    <!-- Favicon & Apple Icon -->
+    <link rel="icon" type="image/png" href="{{ '/assets/tron.png' | relative_url }}">
+    <link rel="apple-touch-icon" href="{{ '/assets/tron.png' | relative_url }}">
+    
+    <!-- Google Fonts (Preconnect added for faster loading) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -27,8 +37,11 @@
             }
         }
     </script>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
         body { font-family: 'Inter', sans-serif; }
         code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
     </style>
