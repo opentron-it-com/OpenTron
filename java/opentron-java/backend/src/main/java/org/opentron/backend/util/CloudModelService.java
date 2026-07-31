@@ -3,6 +3,7 @@ package org.opentron.backend.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.opentron.backend.services.NetworkPolicyService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -20,6 +21,11 @@ public class CloudModelService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger logger = LoggerFactory.getLogger(CloudModelService.class);
+    private final NetworkPolicyService networkPolicyService;
+
+    public CloudModelService(NetworkPolicyService networkPolicyService) {
+        this.networkPolicyService = networkPolicyService;
+    }
 
     /**
      * Determine which cloud provider to use based on model name
@@ -151,10 +157,19 @@ public class CloudModelService {
      * List available cloud models from configured providers.
      */
     public Mono<List<String>> listModels() {
+        if (!networkPolicyService.isInternetAllowed()) {
+            logger.info("Network policy disallows external internet access - skipping cloud model listing");
+            return Mono.just(Collections.emptyList());
+        }
         return listModels(null);
     }
 
     public Mono<List<String>> listModels(Map<String, String> apiKeyOverrides) {
+        if (!networkPolicyService.isInternetAllowed()) {
+            logger.info("Network policy disallows external internet access - skipping cloud model listing");
+            return Mono.just(Collections.emptyList());
+        }
+
         return Mono.fromCallable(() -> {
             logger.info("CloudModelService listModels overrides={}", apiKeyOverrides);
             List<String> models = new ArrayList<>();
@@ -618,6 +633,9 @@ public class CloudModelService {
      */
     public Mono<Map<String, Object>> callCloudModel(String model, List<Map<String, String>> messages, Map<String, String> apiKeyOverrides) {
         return Mono.fromCallable(() -> {
+            if (!networkPolicyService.isInternetAllowed()) {
+                throw new RuntimeException("Network policy disallows external internet access to cloud providers");
+            }
             String provider = getCloudProvider(model);
             if (provider == null) {
                 throw new RuntimeException("Unknown cloud model: " + model);

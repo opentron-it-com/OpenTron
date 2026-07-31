@@ -1,6 +1,7 @@
 package org.opentron.backend.util;
 
 import org.junit.jupiter.api.Test;
+import org.opentron.backend.services.NetworkPolicyService;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,9 @@ class CloudModelServiceTest {
 
     @Test
     void buildAnthropicPayloadMovesSystemPromptToTopLevel() {
-        CloudModelService service = new CloudModelService();
+        // Provide a NetworkPolicyService to match CloudModelService constructor
+        NetworkPolicyService policy = new NetworkPolicyService(true);
+        CloudModelService service = new CloudModelService(policy);
 
         List<Map<String, String>> messages = List.of(
             Map.of("role", "system", "content", "You are a helpful assistant"),

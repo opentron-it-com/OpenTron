@@ -66,6 +66,8 @@ public class ModelSelectorService {
                 return selectQAModel();
             case "devops":
                 return selectDevOpsModel();
+            case "knowledge":
+                return selectKnowledgeModel();
             default:
                 return selectGeneralModel();
         }
@@ -160,6 +162,36 @@ public class ModelSelectorService {
             return "neural-chat";
         }
         logger.info("DevOps → mistral (last resort)");
+        return "mistral";
+    }
+
+    /**
+     * Knowledge specialist: optimize for memory-backed reasoning and general assistance.
+     * Prefers cloud models first when available, then general-purpose local models.
+     */
+    private String selectKnowledgeModel() {
+        String cloudModel = selectCloudModel(getPreferredCloudModels());
+        if (cloudModel != null) {
+            logger.info("Knowledge → {} (cloud model)", cloudModel);
+            return cloudModel;
+        }
+        if (hasModel("neural-chat")) {
+            logger.info("Knowledge → neural-chat (general reasoning)");
+            return "neural-chat";
+        }
+        if (hasModel("qwen3:8b")) {
+            logger.info("Knowledge → qwen3:8b (fast, capable)");
+            return "qwen3:8b";
+        }
+        if (hasModel("qwen3.5:9b")) {
+            logger.info("Knowledge → qwen3.5:9b (fast, capable)");
+            return "qwen3.5:9b";
+        }
+        if (hasModel("qwen3.5:2b")) {
+            logger.info("Knowledge → qwen3.5:2b (very fast)");
+            return "qwen3.5:2b";
+        }
+        logger.info("Knowledge → mistral (last resort)");
         return "mistral";
     }
 
@@ -343,7 +375,8 @@ public class ModelSelectorService {
             "backend_model", selectBackendModel(),
             "frontend_model", selectFrontendModel(),
             "qa_model", selectQAModel(),
-            "devops_model", selectDevOpsModel()
+            "devops_model", selectDevOpsModel(),
+            "knowledge_model", selectKnowledgeModel()
         );
     }
 }

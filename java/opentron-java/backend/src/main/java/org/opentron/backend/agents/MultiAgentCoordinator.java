@@ -27,6 +27,7 @@ public class MultiAgentCoordinator {
     private final HuggingFaceService huggingFaceService;
     private final CloudModelService cloudModelService;
     private final ModelSelectorService modelSelectorService;
+    private final org.opentron.backend.services.WebSearchService webSearchService;
     @Autowired(required = false)
     private TelemetryService telemetryService;
     @Autowired(required = false)
@@ -39,11 +40,13 @@ public class MultiAgentCoordinator {
     }
 
     public MultiAgentCoordinator(OllamaCliService ollamaService, HuggingFaceService huggingFaceService,
-                                 ModelSelectorService modelSelectorService, CloudModelService cloudModelService) {
+                                 ModelSelectorService modelSelectorService, CloudModelService cloudModelService,
+                                 org.opentron.backend.services.WebSearchService webSearchService) {
         this.ollamaService = ollamaService;
         this.huggingFaceService = huggingFaceService;
         this.modelSelectorService = modelSelectorService;
         this.cloudModelService = cloudModelService;
+        this.webSearchService = webSearchService;
         try {
             initializeAgents();
             startMessageProcessor();
@@ -59,7 +62,7 @@ public class MultiAgentCoordinator {
     private void initializeAgentsWithDefaults() {
         logger.info("Using fallback initialization with default models");
         AgentLLMBridge llmBridge = new AgentLLMBridge(
-                ollamaService, huggingFaceService, cloudModelService, "mistral", null);
+            ollamaService, huggingFaceService, cloudModelService, "mistral", null, webSearchService);
         agents.put("coordinator", new CoordinatorAgent(llmBridge));
         agents.put("backend",    new BackendSpecialist(llmBridge));
         agents.put("frontend",   new FrontendSpecialist(llmBridge));
@@ -80,32 +83,35 @@ public class MultiAgentCoordinator {
         String frontendModel = modelSelectorService.selectBestModel("frontend", apiKeyOverrides);
         String qaModel       = modelSelectorService.selectBestModel("qa",       apiKeyOverrides);
         String devopsModel   = modelSelectorService.selectBestModel("devops",   apiKeyOverrides);
+        String knowledgeModel = modelSelectorService.selectBestModel("knowledge", apiKeyOverrides);
 
-        logger.info("Model assignments: Backend={}, Frontend={}, QA={}, DevOps={}",
-                backendModel, frontendModel, qaModel, devopsModel);
+        logger.info("Model assignments: Backend={}, Frontend={}, QA={}, DevOps={}, Knowledge={}",
+                backendModel, frontendModel, qaModel, devopsModel, knowledgeModel);
 
         AgentLLMBridge coordinatorBridge = new AgentLLMBridge(
-                ollamaService, huggingFaceService, cloudModelService, coordinatorModel, apiKeyOverrides);
+            ollamaService, huggingFaceService, cloudModelService, coordinatorModel, apiKeyOverrides, webSearchService);
         agents.put("coordinator", new CoordinatorAgent(coordinatorBridge));
 
         AgentLLMBridge backendBridge = new AgentLLMBridge(
-                ollamaService, huggingFaceService, cloudModelService, backendModel, apiKeyOverrides);
+            ollamaService, huggingFaceService, cloudModelService, backendModel, apiKeyOverrides, webSearchService);
         agents.put("backend", new BackendSpecialist(backendBridge));
 
         AgentLLMBridge frontendBridge = new AgentLLMBridge(
-                ollamaService, huggingFaceService, cloudModelService, frontendModel, apiKeyOverrides);
+            ollamaService, huggingFaceService, cloudModelService, frontendModel, apiKeyOverrides, webSearchService);
         agents.put("frontend", new FrontendSpecialist(frontendBridge));
 
         AgentLLMBridge qaBridge = new AgentLLMBridge(
-                ollamaService, huggingFaceService, cloudModelService, qaModel, apiKeyOverrides);
+            ollamaService, huggingFaceService, cloudModelService, qaModel, apiKeyOverrides, webSearchService);
         agents.put("qa", new QAAgent(qaBridge));
 
         AgentLLMBridge devopsBridge = new AgentLLMBridge(
-                ollamaService, huggingFaceService, cloudModelService, devopsModel, apiKeyOverrides);
+            ollamaService, huggingFaceService, cloudModelService, devopsModel, apiKeyOverrides, webSearchService);
         agents.put("devops", new DevOpsAgent(devopsBridge));
 
-        // Knowledge agent shares the coordinator bridge (general-purpose model)
-        agents.put("knowledge", new KnowledgeAgent(coordinatorBridge, memoryService));
+        // Knowledge agent now gets its own optimized model for personal knowledge management
+        AgentLLMBridge knowledgeBridge = new AgentLLMBridge(
+            ollamaService, huggingFaceService, cloudModelService, knowledgeModel, apiKeyOverrides, webSearchService);
+        agents.put("knowledge", new KnowledgeAgent(knowledgeBridge, memoryService));
 
         logger.info("Initialized {} agents with optimized models", agents.size());
     }
@@ -437,7 +443,7 @@ public class MultiAgentCoordinator {
                     ignore.addAll(List.of("UI implementation", "business logic"));
                 }
                 case "knowledge"  -> {
-                    focus.addAll(List.of("personal data", "emails", "documents", "notes", "calendar", "contacts", "internet access", "external APIs"));
+                    focus.addAll(List.of("personal data", "emails", "documents", "notes", "calendar", "contacts", "internet access", "external APIs", "user memory"));
                     ignore.addAll(List.of("code generation", "infrastructure"));
                 }
                 default           -> focus.add("core request");
@@ -502,6 +508,7 @@ public class MultiAgentCoordinator {
                     List<String> s = new ArrayList<>();
                     s.add("search_memory");
                     s.add("search_documents");
+                    s.add("web_research");
                     yield s;
                 }
                 default          -> List.of();
@@ -707,7 +714,7 @@ public class MultiAgentCoordinator {
             this.memoryService = memoryService;
             this.skills        = Arrays.asList("search_memory", "search_emails",
                 "search_documents", "search_notes", "search_calendar", "search_contacts",
-                "web_research", "api_integration", "fetch_external_content");
+                "web_research", "api_integration", "fetch_external_content", "tavily_search");
         }
 
         @Override
@@ -739,7 +746,7 @@ public class MultiAgentCoordinator {
             }
 
             Map<String, Object> result = invokeScopedLLM(
-                "personal knowledge assistant with access to the user's indexed emails, documents, notes, and calendar",
+                "personal knowledge assistant with access to the user's indexed emails, documents, notes, calendar, and real-time web search via Tavily",
                 task, enrichedContext, focus, ignore, constraints, "knowledge", msg.streamCallback);
             this.lastExecutedTime = System.currentTimeMillis() - start;
             return handleEmptyResponse(result, "Knowledge");

@@ -115,6 +115,13 @@ host = "127.0.0.1"
 port = 8000
 agent = "native_openhands"
 
+# Security and network policy
+[security]
+# If false, the backend will block outbound calls to external cloud providers
+# (OpenAI, Anthropic, Google, OpenRouter, etc.). Local loopback sidecars
+# (localhost / 127.0.0.1) remain allowed. Default true for backwards compatibility.
+allow_internet = true
+
 [speech]
 # Setează faster_whisper ca backend implicit de transcriere
 stt_provider = "faster_whisper"
