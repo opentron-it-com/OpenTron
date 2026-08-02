@@ -3,20 +3,12 @@ import { Search, Cpu, X, Download, Loader2, Trash2, Check, Cloud, Key, Eye, EyeO
 import { useAppStore } from '../lib/store';
 import { pullModel, deleteModel, fetchModels, preloadModel, isTauri } from '../lib/api';
 
-/** Popular models that users can download from the catalogue. */
+/** Fast models optimized for speed (matching cloud model response times) */
 const CATALOGUE_MODELS = [
-  { id: 'qwen3.5:0.8b', size: '~1 GB', desc: 'Qwen 3.5 0.8B — fast, lightweight' },
-  { id: 'qwen3.5:2b', size: '~2.7 GB', desc: 'Qwen 3.5 2B' },
-  { id: 'qwen3.5:4b', size: '~3.4 GB', desc: 'Qwen 3.5 4B — recommended default' },
-  { id: 'qwen3.5:9b', size: '~6.6 GB', desc: 'Qwen 3.5 9B' },
-  { id: 'qwen3.5:27b', size: '~17 GB', desc: 'Qwen 3.5 27B' },
-  { id: 'qwen3.5:35b', size: '~24 GB', desc: 'Qwen 3.5 35B' },
-  { id: 'qwen3.5:122b', size: '~81 GB', desc: 'Qwen 3.5 122B — largest' },
-  { id: 'llama3.3:latest', size: '~4.9 GB', desc: 'Llama 3.3 8B' },
-  { id: 'mistral:latest', size: '~4.1 GB', desc: 'Mistral 7B' },
-  { id: 'gemma3:latest', size: '~3.3 GB', desc: 'Gemma 3 4B' },
-  { id: 'deepseek-r1:7b', size: '~4.7 GB', desc: 'DeepSeek R1 7B' },
-  { id: 'phi4:latest', size: '~9.1 GB', desc: 'Phi-4 14B' },
+  { id: 'llama3.2:1b', size: '~1.3 GB', desc: 'Llama 3.2 1B — blazing fast, instant responses' },
+  { id: 'llama3.2:3b', size: '~2 GB', desc: 'Llama 3.2 3B — ultra-fast, general reasoning' },
+  { id: 'qwen2.5-coder:7b', size: '~4.7 GB', desc: 'Qwen 2.5 Coder 7B — fast code specialist' },
+  { id: 'deepseek-coder:6.7b', size: '~3.8 GB', desc: 'DeepSeek Coder 6.7B — fast code specialist' },
 ];
 
 /** Cloud provider definitions */
@@ -43,9 +35,9 @@ const CLOUD_PROVIDERS: CloudProvider[] = [
     envKey: 'ANTHROPIC_API_KEY',
     storageKey: 'OpenTron-anthropic-key',
     models: [
-      { id: 'claude-sonnet-4-6', desc: 'Claude Sonnet 4.6 — balanced' },
-      { id: 'claude-opus-4-6', desc: 'Claude Opus 4.6 — most capable' },
-      { id: 'claude-haiku-4-5', desc: 'Claude Haiku 4.5 — fastest' },
+      { id: 'claude-sonnet-4-6', desc: 'Claude 3.5 Sonnet — balanced' },
+      { id: 'claude-opus-4-6', desc: 'Claude 4.6 Opus — most capable' },
+      { id: 'claude-haiku-4-5', desc: 'Claude 4.5 Haiku — fastest' },
     ],
   },
   {
@@ -53,9 +45,9 @@ const CLOUD_PROVIDERS: CloudProvider[] = [
     envKey: 'GEMINI_API_KEY',
     storageKey: 'OpenTron-gemini-key',
     models: [
-      { id: 'gemini-2.5-pro', desc: 'Gemini 2.5 Pro — flagship' },
-      { id: 'gemini-2.5-flash', desc: 'Gemini 2.5 Flash — fast' },
-      { id: 'gemini-3-pro', desc: 'Gemini 3 Pro — latest' },
+      { id: 'gemini-3.1-pro', desc: 'Gemini 3.1 Pro — balanced' },
+      { id: 'gemini-3.6-flash', desc: 'Gemini 3.6 Flash — fast' },
+      { id: 'gemini-2.5-flash', desc: 'Gemini 2.5 Flash — experimental' },
     ],
   },
   {
@@ -64,8 +56,8 @@ const CLOUD_PROVIDERS: CloudProvider[] = [
     storageKey: 'OpenTron-openrouter-key',
     models: [
       { id: 'openrouter/auto', desc: 'Auto — best model for the task' },
-      { id: 'openrouter/anthropic/claude-sonnet-4', desc: 'Claude Sonnet 4 via OpenRouter' },
-      { id: 'openrouter/deepseek/deepseek-r1', desc: 'DeepSeek R1 via OpenRouter' },
+      { id: 'openrouter/deepseek/deepseek-r1:free', desc: 'DeepSeek R1 Free' },
+      { id: 'openrouter/meta-llama/llama-3.3-70b-instruct:free', desc: 'Llama 3.3 70B Free' },
     ],
   },
 ];
@@ -543,4 +535,3 @@ export function CommandPalette() {
     </div>
   );
 }
-

@@ -16,6 +16,8 @@ import java.time.format.DateTimeFormatter;
 /**
  * AgentLLMBridge - Single clean call to Ollama, no retries, no timeouts.
  * Virtual threads handle the wait; only fails if Ollama is genuinely down.
+ * 
+ * Cloud model failures automatically fall back to local Ollama.
  */
 public class AgentLLMBridge {
 
@@ -164,8 +166,14 @@ public class AgentLLMBridge {
             if (cloudModelService == null) {
                 throw new IllegalStateException("Cloud model service not configured for model: " + model);
             }
-            logger.info("Routing cloud model {} through CloudModelService", model);
-            return cloudModelService.callCloudModel(model, messages, apiKeyOverrides).block();
+            try {
+                logger.info("Routing cloud model {} through CloudModelService", model);
+                return cloudModelService.callCloudModel(model, messages, apiKeyOverrides).block();
+            } catch (Exception e) {
+                logger.warn("Cloud model {} failed ({}), falling back to Ollama llama3.2:3b", model, e.getMessage());
+                // Fall back to local model when cloud fails
+                return ollamaService.chatCompletion("llama3.2:3b", messages).block();
+            }
         }
 
         if (useHF) {

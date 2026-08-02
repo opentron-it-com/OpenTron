@@ -1,7 +1,8 @@
-﻿import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { coordinateAgents, getAgentStatuses, sendAgentTask } from '../../lib/api';
 import { toast } from 'sonner';
 import { Send, Loader2, Brain, Zap, AlertCircle, CheckCircle2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 interface AgentStatusInfo {
   name: string;
@@ -169,7 +170,20 @@ export function CoordinatorPanel() {
     }
 
     if (typeof agentResult === 'string') {
-      return agentResult;
+      return (
+        <ReactMarkdown
+          components={{
+            pre: (props: any) => (
+              <pre {...props} style={{ background: 'var(--color-bg)', padding: '8px', borderRadius: '4px', overflow: 'auto', fontSize: '0.75rem' }} />
+            ),
+            code: (props: any) => (
+              <code {...props} style={{ background: props.inline ? 'var(--color-bg)' : undefined, padding: props.inline ? '2px 4px' : undefined, borderRadius: '2px' }} />
+            ),
+          }}
+        >
+          {agentResult}
+        </ReactMarkdown>
+      );
     }
 
     if (agentResult?.recommendations && Array.isArray(agentResult.recommendations)) {
@@ -177,7 +191,7 @@ export function CoordinatorPanel() {
         <div>
           {agentResult.is_mock && (
             <div style={{ color: 'var(--color-warning)', fontSize: '0.75rem', marginBottom: '0.5rem' }}>
-              âš¡ Mock response (LLM unavailable)
+              ⚡ Mock response (LLM unavailable)
             </div>
           )}
           <ul style={{ paddingLeft: '1.25rem', margin: 0 }}>
@@ -346,7 +360,7 @@ export function CoordinatorPanel() {
                     <div className="font-semibold mb-2" style={{ color: 'var(--color-accent)', fontSize: '0.875rem' }}>
                       {agent.charAt(0).toUpperCase() + agent.slice(1)}
                     </div>
-                    <div style={{ color: 'var(--color-text-secondary)', fontSize: '0.875rem' }}>
+                    <div style={{ color: 'var(--color-text-secondary)', fontSize: '0.875rem', maxHeight: '500px', overflowY: 'auto' }}>
                       {renderAgentResult(agentResult)}
                     </div>
                   </div>

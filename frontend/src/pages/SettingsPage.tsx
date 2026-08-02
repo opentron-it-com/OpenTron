@@ -859,7 +859,7 @@ export function SettingsPage() {
               
               <div className="flex gap-3 mt-3 text-xs">
                 <a
-                  href="https://github.com/rciorica/OpenTron/"
+                  href="https://github.com/opentron-it-com/OpenTron/"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ color: 'var(--color-accent)' }}
@@ -867,7 +867,7 @@ export function SettingsPage() {
                   Project site
                 </a>
                 <a
-                  href="https://rciorica.github.io/OpenTron/"
+                  href="https://opentron.it.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ color: 'var(--color-accent)' }}

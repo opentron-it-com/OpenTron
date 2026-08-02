@@ -657,7 +657,23 @@ public class CloudModelService {
                     case "anthropic":
                         return callAnthropic(model, apiKey, messages);
                     case "google":
-                        return callGoogle(model, apiKey, messages);
+                        for (int retry = 0; retry < 3; retry++) {
+                            try {
+                                return callGoogle(model, apiKey, messages);
+                            } catch (Exception e) {
+                                String errMsg = e.getMessage();
+                                if (errMsg != null && errMsg.contains("503") && retry < 2) {
+                                    logger.warn("Gemini 503 error (attempt {}/3), retrying...", retry + 1);
+                                    int[] delays = {1000, 3000, 7000};
+                                    double jitter = (Math.random() - 0.5) * 0.4;
+                                    long wait = (long) (delays[retry] * (1 + jitter));
+                                    Thread.sleep(wait);
+                                    continue;
+                                }
+                                throw e;
+                            }
+                        }
+                        throw new RuntimeException("Gemini API failed after 3 attempts");
                     case "openrouter":
                         // OpenRouter uses OpenAI-compatible API at api.openrouter.ai
                         return callOpenRouter(model, apiKey, messages);
@@ -782,3 +798,7 @@ public class CloudModelService {
         }
     }
 }
+
+
+
+
