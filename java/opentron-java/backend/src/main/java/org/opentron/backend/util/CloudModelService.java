@@ -3,6 +3,7 @@ package org.opentron.backend.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.opentron.backend.services.NetworkPolicyService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -20,6 +21,11 @@ public class CloudModelService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger logger = LoggerFactory.getLogger(CloudModelService.class);
+    private final NetworkPolicyService networkPolicyService;
+
+    public CloudModelService(NetworkPolicyService networkPolicyService) {
+        this.networkPolicyService = networkPolicyService;
+    }
 
     /**
      * Determine which cloud provider to use based on model name
@@ -151,10 +157,19 @@ public class CloudModelService {
      * List available cloud models from configured providers.
      */
     public Mono<List<String>> listModels() {
+        if (!networkPolicyService.isInternetAllowed()) {
+            logger.info("Network policy disallows external internet access - skipping cloud model listing");
+            return Mono.just(Collections.emptyList());
+        }
         return listModels(null);
     }
 
     public Mono<List<String>> listModels(Map<String, String> apiKeyOverrides) {
+        if (!networkPolicyService.isInternetAllowed()) {
+            logger.info("Network policy disallows external internet access - skipping cloud model listing");
+            return Mono.just(Collections.emptyList());
+        }
+
         return Mono.fromCallable(() -> {
             logger.info("CloudModelService listModels overrides={}", apiKeyOverrides);
             List<String> models = new ArrayList<>();
@@ -308,7 +323,7 @@ public class CloudModelService {
         payload.put("model", model);
         payload.put("messages", messages);
         payload.put("temperature", 0.7);
-        payload.put("max_tokens", 2000);
+        payload.put("max_tokens", 16000);
 
         String jsonPayload = objectMapper.writeValueAsString(payload);
         
@@ -534,7 +549,7 @@ public class CloudModelService {
         
         Map<String, Object> generationConfig = new LinkedHashMap<>();
         generationConfig.put("temperature", 0.7);
-        generationConfig.put("maxOutputTokens", 2000);
+        generationConfig.put("maxOutputTokens", 16000);
         payload.put("generationConfig", generationConfig);
 
         String jsonPayload = objectMapper.writeValueAsString(payload);
@@ -618,6 +633,9 @@ public class CloudModelService {
      */
     public Mono<Map<String, Object>> callCloudModel(String model, List<Map<String, String>> messages, Map<String, String> apiKeyOverrides) {
         return Mono.fromCallable(() -> {
+            if (!networkPolicyService.isInternetAllowed()) {
+                throw new RuntimeException("Network policy disallows external internet access to cloud providers");
+            }
             String provider = getCloudProvider(model);
             if (provider == null) {
                 throw new RuntimeException("Unknown cloud model: " + model);
@@ -639,7 +657,23 @@ public class CloudModelService {
                     case "anthropic":
                         return callAnthropic(model, apiKey, messages);
                     case "google":
-                        return callGoogle(model, apiKey, messages);
+                        for (int retry = 0; retry < 3; retry++) {
+                            try {
+                                return callGoogle(model, apiKey, messages);
+                            } catch (Exception e) {
+                                String errMsg = e.getMessage();
+                                if (errMsg != null && errMsg.contains("503") && retry < 2) {
+                                    logger.warn("Gemini 503 error (attempt {}/3), retrying...", retry + 1);
+                                    int[] delays = {1000, 3000, 7000};
+                                    double jitter = (Math.random() - 0.5) * 0.4;
+                                    long wait = (long) (delays[retry] * (1 + jitter));
+                                    Thread.sleep(wait);
+                                    continue;
+                                }
+                                throw e;
+                            }
+                        }
+                        throw new RuntimeException("Gemini API failed after 3 attempts");
                     case "openrouter":
                         // OpenRouter uses OpenAI-compatible API at api.openrouter.ai
                         return callOpenRouter(model, apiKey, messages);
@@ -684,7 +718,7 @@ public class CloudModelService {
         payload.put("model", model);
         payload.put("messages", messages);
         payload.put("temperature", 0.7);
-        payload.put("max_tokens", 2000);
+        payload.put("max_tokens", 16000);
 
         String jsonPayload = objectMapper.writeValueAsString(payload);
         
@@ -764,3 +798,8 @@ public class CloudModelService {
         }
     }
 }
+
+
+
+
+

@@ -19,7 +19,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { useAppStore, type ThemeMode } from '../lib/store';
-import { checkHealth, fetchSpeechHealth, getMemoryStats, getInferenceSource, setInferenceSource, type InferenceSource } from '../lib/api';
+import { checkHealth, fetchSpeechHealth, getMemoryStats, getInferenceSource, setInferenceSource, type InferenceSource, getNetworkPolicy, setNetworkPolicy, getSearchKey, setSearchKey } from '../lib/api';
 import { invoke } from '@tauri-apps/api/core';
 import { isAutoUpdateDisabled, setAutoUpdateDisabled } from '../components/Desktop/UpdateChecker';
 
@@ -50,6 +50,7 @@ function ApiKeyInput({ storageKey, placeholder }: { storageKey: string; placehol
     try { return localStorage.getItem(storageKey) || ''; } catch { return ''; }
   });
   const [saved, setSaved] = useState(false);
+  const [networkAllowed, setNetworkAllowed] = useState<boolean | null>(null);
   const save = (v: string) => {
     setValue(v);
     try { if (v) localStorage.setItem(storageKey, v); else localStorage.removeItem(storageKey); } catch {}
@@ -196,6 +197,14 @@ export function SettingsPage() {
   const [customEngine, setCustomEngine] = useState('lmstudio');
   const [customKey, setCustomKey] = useState('');
   const [srcMsg, setSrcMsg] = useState('');
+  const [searchKey, setSearchKeyState] = useState(() => {
+    try { return localStorage.getItem('OpenTron-search-key') || ''; } catch { return ''; }
+  });
+  const [searchKeySaved, setSearchKeySaved] = useState(false);
+  const [searchProvider, setSearchProvider] = useState(() => {
+    try { return localStorage.getItem('OpenTron-search-provider') || 'serpapi'; } catch { return 'serpapi'; }
+  });
+  const [networkAllowed, setNetworkAllowed] = useState<boolean | null>(null);
 
   useEffect(() => {
     getInferenceSource().then((s) => {
@@ -227,6 +236,13 @@ export function SettingsPage() {
     getMemoryStats()
       .then(setMemoryStats)
       .catch(() => setMemoryStats(null));
+    // fetch network policy
+    getNetworkPolicy().then(p => setNetworkAllowed(!!p.allow_internet)).catch(() => setNetworkAllowed(null));
+    // fetch search key status
+    getSearchKey().then(s => {
+      try { if (s.configured) { setSearchKeyState(localStorage.getItem('OpenTron-search-key') || ''); } }
+      catch {};
+    }).catch(() => {});
   }, []);
 
   const showSaved = () => {
@@ -388,6 +404,33 @@ export function SettingsPage() {
                 }}
               />
             </SettingRow>
+            <SettingRow label="Allow external internet" description="Enable outbound calls to cloud providers (OpenAI, Anthropic, Google, etc.)">
+              <div>
+                <button
+                  onClick={async () => {
+                    try {
+                      const next = !(networkAllowed === true);
+                      await setNetworkPolicy(next);
+                      setNetworkAllowed(next);
+                      showSaved();
+                    } catch (e) {
+                      console.error('Failed to update network policy', e);
+                    }
+                  }}
+                  className="relative w-11 h-6 rounded-full transition-colors cursor-pointer"
+                  style={{
+                    background: networkAllowed ? 'var(--color-accent)' : 'var(--color-bg-tertiary)'
+                  }}
+                >
+                  <span
+                    className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full transition-transform bg-white"
+                    style={{
+                      transform: networkAllowed ? 'translateX(20px)' : 'translateX(0)'
+                    }}
+                  />
+                </button>
+              </div>
+            </SettingRow>
           </Section>
 
           {/* Inference source */}
@@ -479,7 +522,32 @@ export function SettingsPage() {
           {/* Tools */}
           <Section title="Tools">
             <SettingRow label="Web Search" description="SerpAPI or Tavily key for web search tool">
-              <ApiKeyInput storageKey="OpenTron-search-key" placeholder="API key..." />
+              <div className="flex items-center gap-2">
+                <input type="password" value={searchKey} onChange={e => { setSearchKeyState(e.target.value); }} placeholder="API key..."
+                  className="w-48 px-2 py-1 rounded text-xs"
+                  style={{ background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)' }} />
+                <select value={searchProvider} onChange={e => setSearchProvider(e.target.value)}
+                  className="text-sm px-2 py-1 rounded" style={{ background: 'var(--color-bg-secondary)', color: 'var(--color-text)', border: '1px solid var(--color-border)' }}>
+                  <option value="serpapi">SerpAPI</option>
+                  <option value="tavily">Tavily</option>
+                </select>
+                <button
+                  onClick={async () => {
+                    try {
+                      await setSearchKey(searchKey && searchKey.length > 0 ? searchKey : null, searchProvider);
+                      try { if (searchKey) localStorage.setItem('OpenTron-search-key', searchKey); else localStorage.removeItem('OpenTron-search-key'); } catch {}
+                      try { if (searchProvider) localStorage.setItem('OpenTron-search-provider', searchProvider); else localStorage.removeItem('OpenTron-search-provider'); } catch {}
+                      setSearchKeySaved(true);
+                      setTimeout(() => setSearchKeySaved(false), 2000);
+                    } catch (e) {
+                      console.error('Failed to save search key', e);
+                    }
+                  }}
+                  className="px-2 py-1 rounded text-xs font-medium cursor-pointer"
+                  style={{ background: 'var(--color-bg-tertiary)', color: 'var(--color-text)', border: '1px solid var(--color-border)' }}
+                >Save</button>
+                {searchKeySaved && <span className="text-[10px]" style={{ color: 'var(--color-success)' }}>Saved</span>}
+              </div>
             </SettingRow>
           </Section>
 
@@ -791,7 +859,7 @@ export function SettingsPage() {
               
               <div className="flex gap-3 mt-3 text-xs">
                 <a
-                  href="https://github.com/rciorica/OpenTron/"
+                  href="https://github.com/opentron-it-com/OpenTron/"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ color: 'var(--color-accent)' }}
@@ -799,7 +867,7 @@ export function SettingsPage() {
                   Project site
                 </a>
                 <a
-                  href="https://rciorica.github.io/OpenTron/"
+                  href="https://opentron.it.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ color: 'var(--color-accent)' }}

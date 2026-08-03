@@ -12,6 +12,7 @@ import org.opentron.backend.memory.MemoryService;
 import org.opentron.backend.memory.MemorySearchRequest;
 import org.opentron.backend.memory.MemoryEntry;
 import org.opentron.backend.services.ModelSelectorService;
+import org.opentron.backend.util.GeminiCodeModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,10 +28,13 @@ public class MultiAgentCoordinator {
     private final HuggingFaceService huggingFaceService;
     private final CloudModelService cloudModelService;
     private final ModelSelectorService modelSelectorService;
+    private final org.opentron.backend.services.WebSearchService webSearchService;
     @Autowired(required = false)
     private TelemetryService telemetryService;
     @Autowired(required = false)
     private MemoryService memoryService;
+    @Autowired(required = false)
+    private GeminiCodeModelService geminiService;
     private final Map<String, SpecializedAgent> agents = new ConcurrentHashMap<>();
     private final BlockingQueue<AgentMessage> messageQueue = new LinkedBlockingQueue<>();
 
@@ -39,11 +43,13 @@ public class MultiAgentCoordinator {
     }
 
     public MultiAgentCoordinator(OllamaCliService ollamaService, HuggingFaceService huggingFaceService,
-                                 ModelSelectorService modelSelectorService, CloudModelService cloudModelService) {
+                                 ModelSelectorService modelSelectorService, CloudModelService cloudModelService,
+                                 org.opentron.backend.services.WebSearchService webSearchService) {
         this.ollamaService = ollamaService;
         this.huggingFaceService = huggingFaceService;
         this.modelSelectorService = modelSelectorService;
         this.cloudModelService = cloudModelService;
+        this.webSearchService = webSearchService;
         try {
             initializeAgents();
             startMessageProcessor();
@@ -59,7 +65,7 @@ public class MultiAgentCoordinator {
     private void initializeAgentsWithDefaults() {
         logger.info("Using fallback initialization with default models");
         AgentLLMBridge llmBridge = new AgentLLMBridge(
-                ollamaService, huggingFaceService, cloudModelService, "mistral", null);
+            ollamaService, huggingFaceService, cloudModelService, "mistral", null, webSearchService);
         agents.put("coordinator", new CoordinatorAgent(llmBridge));
         agents.put("backend",    new BackendSpecialist(llmBridge));
         agents.put("frontend",   new FrontendSpecialist(llmBridge));
@@ -80,32 +86,35 @@ public class MultiAgentCoordinator {
         String frontendModel = modelSelectorService.selectBestModel("frontend", apiKeyOverrides);
         String qaModel       = modelSelectorService.selectBestModel("qa",       apiKeyOverrides);
         String devopsModel   = modelSelectorService.selectBestModel("devops",   apiKeyOverrides);
+        String knowledgeModel = modelSelectorService.selectBestModel("knowledge", apiKeyOverrides);
 
-        logger.info("Model assignments: Backend={}, Frontend={}, QA={}, DevOps={}",
-                backendModel, frontendModel, qaModel, devopsModel);
+        logger.info("Model assignments: Backend={}, Frontend={}, QA={}, DevOps={}, Knowledge={}",
+                backendModel, frontendModel, qaModel, devopsModel, knowledgeModel);
 
         AgentLLMBridge coordinatorBridge = new AgentLLMBridge(
-                ollamaService, huggingFaceService, cloudModelService, coordinatorModel, apiKeyOverrides);
+            ollamaService, huggingFaceService, cloudModelService, coordinatorModel, apiKeyOverrides, webSearchService);
         agents.put("coordinator", new CoordinatorAgent(coordinatorBridge));
 
         AgentLLMBridge backendBridge = new AgentLLMBridge(
-                ollamaService, huggingFaceService, cloudModelService, backendModel, apiKeyOverrides);
+            ollamaService, huggingFaceService, cloudModelService, backendModel, apiKeyOverrides, webSearchService);
         agents.put("backend", new BackendSpecialist(backendBridge));
 
         AgentLLMBridge frontendBridge = new AgentLLMBridge(
-                ollamaService, huggingFaceService, cloudModelService, frontendModel, apiKeyOverrides);
+            ollamaService, huggingFaceService, cloudModelService, frontendModel, apiKeyOverrides, webSearchService);
         agents.put("frontend", new FrontendSpecialist(frontendBridge));
 
         AgentLLMBridge qaBridge = new AgentLLMBridge(
-                ollamaService, huggingFaceService, cloudModelService, qaModel, apiKeyOverrides);
+            ollamaService, huggingFaceService, cloudModelService, qaModel, apiKeyOverrides, webSearchService);
         agents.put("qa", new QAAgent(qaBridge));
 
         AgentLLMBridge devopsBridge = new AgentLLMBridge(
-                ollamaService, huggingFaceService, cloudModelService, devopsModel, apiKeyOverrides);
+            ollamaService, huggingFaceService, cloudModelService, devopsModel, apiKeyOverrides, webSearchService);
         agents.put("devops", new DevOpsAgent(devopsBridge));
 
-        // Knowledge agent shares the coordinator bridge (general-purpose model)
-        agents.put("knowledge", new KnowledgeAgent(coordinatorBridge, memoryService));
+        // Knowledge agent now gets its own optimized model for personal knowledge management
+        AgentLLMBridge knowledgeBridge = new AgentLLMBridge(
+            ollamaService, huggingFaceService, cloudModelService, knowledgeModel, apiKeyOverrides, webSearchService);
+        agents.put("knowledge", new KnowledgeAgent(knowledgeBridge, memoryService));
 
         logger.info("Initialized {} agents with optimized models", agents.size());
     }
@@ -264,37 +273,36 @@ public class MultiAgentCoordinator {
                                                        List<String> constraints, String agentKey,
                                                        StreamingCoordinatorCallback callback) {
 
-            String internetSearchPrompt = "Act as an expert internet researcher.\r\n" + //
-                                "\r\n" + //
-                                "Conduct a deep web investigation on [TOPIC].\r\n" + //
-                                "\r\n" + //
-                                "Use only authoritative sources whenever possible.\r\n" + //
-                                "\r\n" + //
-                                "Methodology:\r\n" + //
-                                "1. Search broadly.\r\n" + //
-                                "2. Verify important claims with multiple sources.\r\n" + //
-                                "3. Locate official documentation and primary sources.\r\n" + //
-                                "4. Identify misinformation or unverified claims.\r\n" + //
-                                "5. Compare competing perspectives objectively.\r\n" + //
-                                "6. Present findings with citations and links.\r\n" + //
-                                "\r\n" + //
-                                "Deliver:\r\n" + //
-                                "- Executive summary\r\n" + //
-                                "- Detailed analysis\r\n" + //
-                                "- Evidence table\r\n" + //
-                                "- Key insights\r\n" + //
-                                "- Risks and limitations\r\n" + //
-                                "- Source list\r\n" + //
-                                "\r\n" + //
-                                "Do not make assumptions.\r\n" + //
+            String internetSearchPrompt = "Act as an expert internet researcher.\r\n" +
+                                "\r\n" +
+                                "Conduct a deep web investigation on [TOPIC].\r\n" +
+                                "\r\n" +
+                                "Use only authoritative sources whenever possible.\r\n" +
+                                "\r\n" +
+                                "Methodology:\r\n" +
+                                "1. Search broadly.\r\n" +
+                                "2. Verify important claims with multiple sources.\r\n" +
+                                "3. Locate official documentation and primary sources.\r\n" +
+                                "4. Identify misinformation or unverified claims.\r\n" +
+                                "5. Compare competing perspectives objectively.\r\n" +
+                                "6. Present findings with citations and links.\r\n" +
+                                "\r\n" +
+                                "Deliver:\r\n" +
+                                "- Executive summary\r\n" +
+                                "- Detailed analysis\r\n" +
+                                "- Evidence table\r\n" +
+                                "- Key insights\r\n" +
+                                "- Risks and limitations\r\n" +
+                                "- Source list\r\n" +
+                                "\r\n" +
+                                "Do not make assumptions.\r\n" +
                                 "Clearly distinguish verified facts from opinions." +
-                                "You have internet access and can fetch external content, perform google search, research topics, and integrate with APIs. ";                                                        
-            String systemPrompt = "You are a " + role + ". Solve only the relevant domain. "
-                    + "Stay concise and use the provided context. "
-                    + internetSearchPrompt + " "
-                    + "Focus on: " + String.join(", ", focus.isEmpty() ? List.of("the core request") : focus) + ". "
-                    + (ignore.isEmpty()      ? "" : "Do not address: " + String.join(", ", ignore) + ". ")
-                    + (constraints.isEmpty() ? "" : "Constraints: "   + String.join(", ", constraints) + ".");
+                                "You have internet access and can fetch external content, perform google search, research topics, and integrate with APIs. ";
+            
+            // Get agent-specific system prompt from new AgentSystemPrompts class
+            String baseSystemPrompt = AgentSystemPrompts.getSystemPrompt(agentKey);
+            // Enhance with focus/constraints specific to this request
+            String systemPrompt = AgentSystemPrompts.enhanceWithAgentContext(baseSystemPrompt, agentKey, focus, constraints) + "\n\n" + internetSearchPrompt;
 
             String userQuestion = "Task: " + task
                     + "\n\nRelevant context:\n" + context
@@ -416,28 +424,32 @@ public class MultiAgentCoordinator {
             String requestSummary    = userRequest == null ? "" : userRequest.trim();
             List<String> focus       = new ArrayList<>();
             List<String> ignore      = new ArrayList<>();
-            List<String> constraints = List.of(
-                    "stay concise", "address only the relevant domain", "avoid unrelated suggestions");
+            List<String> constraints = new ArrayList<>(Arrays.asList(
+                    "stay concise", "address only the relevant domain", "avoid unrelated suggestions"));
 
             switch (agentName) {
                 case "backend"    -> {
-                    focus.addAll(List.of("API design", "database access", "caching", "performance", "error handling", "internet access", "external APIs"));
+                    focus.addAll(List.of("thread-safety", "race conditions", "synchronization", "API design", "database access", "caching", "performance", "error handling", "internet access", "external APIs"));
+                    constraints.add("CRITICAL: Always analyze code for thread-safety bugs - race conditions, atomicity violations, visibility issues, and deadlock risks. Show specific scenarios where 2+ threads cause failures. Provide fixed code with synchronization explanation.");
                     ignore.addAll(List.of("UI", "React", "CSS", "visual design"));
                 }
                 case "frontend"   -> {
-                    focus.addAll(List.of("React", "component design", "state flow", "responsive behavior", "accessibility", "internet access", "external APIs"));
+                    focus.addAll(List.of("React", "component design", "state flow", "stale closures", "memory leaks", "responsive behavior", "accessibility", "internet access", "external APIs"));
+                    constraints.add("CRITICAL: Check for React state management issues - stale closures, missing useEffect dependencies, memory leaks in subscriptions, and proper cleanup. Provide working component examples with TypeScript.");
                     ignore.addAll(List.of("backend services", "database schema", "deployment"));
                 }
                 case "qa"         -> {
-                    focus.addAll(List.of("testing strategy", "debugging", "regression risks", "verification steps", "internet access", "external APIs"));
+                    focus.addAll(List.of("edge cases", "unit tests", "integration tests", "debugging", "regression risks", "security vulnerabilities", "error handling", "verification steps", "internet access", "external APIs"));
+                    constraints.add("CRITICAL: Provide specific test cases with assertions. Identify ALL edge cases and failure scenarios. Show reproducible bug scenarios. Explain root causes, not just symptoms.");
                     ignore.addAll(List.of("visual styling", "deployment automation"));
                 }
                 case "devops"     -> {
-                    focus.addAll(List.of("monitoring", "observability", "resource usage", "reliability", "internet access", "external APIs"));
+                    focus.addAll(List.of("resource optimization", "monitoring", "observability", "health checks", "reliability", "scalability", "resource usage", "internet access", "external APIs"));
+                    constraints.add("CRITICAL: Analyze resource usage patterns. Suggest infrastructure improvements with observability metrics. Include health check endpoints and alerting thresholds. Provide Docker/Kubernetes examples.");
                     ignore.addAll(List.of("UI implementation", "business logic"));
                 }
                 case "knowledge"  -> {
-                    focus.addAll(List.of("personal data", "emails", "documents", "notes", "calendar", "contacts", "internet access", "external APIs"));
+                    focus.addAll(List.of("personal data", "emails", "documents", "notes", "calendar", "contacts", "internet access", "external APIs", "user memory"));
                     ignore.addAll(List.of("code generation", "infrastructure"));
                 }
                 default           -> focus.add("core request");
@@ -464,9 +476,10 @@ public class MultiAgentCoordinator {
                 case "backend"   -> {
                     List<String> s = new ArrayList<>();
                     if (lower.contains("spring") || lower.contains("java") || lower.contains("api")
-                            || lower.contains("database") || lower.contains("cache")) {
+                            || lower.contains("database") || lower.contains("cache") || lower.contains("thread") || lower.contains("concurr")) {
                         s.add("spring_boot_configuration");
                         s.add("database_query_optimization");
+                        s.add("concurrent_programming");
                     }
                     yield s;
                 }
@@ -502,6 +515,7 @@ public class MultiAgentCoordinator {
                     List<String> s = new ArrayList<>();
                     s.add("search_memory");
                     s.add("search_documents");
+                    s.add("web_research");
                     yield s;
                 }
                 default          -> List.of();
@@ -518,10 +532,28 @@ public class MultiAgentCoordinator {
                 callback.onAgentDone(agentName, result);
                 return;
             }
-            int chunkSize = Math.max(1, normalized.length() / 12 + 1);
-            for (int i = 0; i < normalized.length(); i += chunkSize) {
-                callback.onAgentChunk(agentName,
-                        normalized.substring(i, Math.min(i + chunkSize, normalized.length())));
+            // Stream by complete sentences/words - split on spaces and punctuation
+            // Emit ~40-80 char chunks ending on word boundaries for natural reading flow
+            int targetChunkSize = 50;
+            int pos = 0;
+            while (pos < normalized.length()) {
+                int end = Math.min(pos + targetChunkSize, normalized.length());
+                // If not at end, find last space or punctuation before end to avoid cutting words
+                if (end < normalized.length()) {
+                    int lastSpace = normalized.lastIndexOf(' ', end);
+                    int lastPunct = Math.max(normalized.lastIndexOf('.', end), 
+                                           Math.max(normalized.lastIndexOf('!', end),
+                                                  normalized.lastIndexOf('?', end)));
+                    int breakPoint = Math.max(lastSpace, lastPunct);
+                    if (breakPoint > pos + 10) { // Only use it if we've made reasonable progress
+                        end = breakPoint + 1;
+                    }
+                }
+                String chunk = normalized.substring(pos, end).trim();
+                if (!chunk.isEmpty()) {
+                    callback.onAgentChunk(agentName, chunk + (end < normalized.length() ? " " : ""));
+                }
+                pos = end;
             }
             callback.onAgentDone(agentName, result);
         }
@@ -553,42 +585,35 @@ public class MultiAgentCoordinator {
 
         private List<String> analyzeRequest(String request, String context) {
             List<String> agentList = new ArrayList<>();
-            String lower           = request.toLowerCase();
-            String contextLower    = (context != null ? context : "").toLowerCase();
-            String combined        = lower + " " + contextLower;
-
-            if (combined.contains("backend") || combined.contains("java")
-                    || combined.contains("database") || combined.contains("api")
-                    || combined.contains("spring")   || combined.contains("cache"))
+            String lower = request.toLowerCase();
+            
+            // Check for SPECIFIC TECHNICAL DOMAINS ONLY
+            // Backend code
+            if (lower.contains("backend") || lower.contains("java") || lower.contains("spring") ||
+                lower.contains("database") || lower.contains("api") || lower.contains("cache") ||
+                lower.contains("server") || lower.contains("http") || lower.contains("thread") || lower.contains("concurrent")) {
                 agentList.add("backend");
-
-            if (combined.contains("frontend") || combined.contains("react")
-                    || combined.contains("ui") || combined.contains("component")
-                    || combined.contains("typescript"))
-                agentList.add("frontend");
-
-            if (combined.contains("test")   || combined.contains("debug")
-                    || combined.contains("fix") || combined.contains("review"))
-                agentList.add("qa");
-
-            if (combined.contains("monitor") || combined.contains("metrics")
-                    || combined.contains("health"))
-                agentList.add("devops");
-
-            if (combined.contains("find")     || combined.contains("search")
-                    || combined.contains("what")     || combined.contains("who")
-                    || combined.contains("when")     || combined.contains("tell me")
-                    || combined.contains("summarize") || combined.contains("recall")
-                    || combined.contains("remember") || combined.contains("note")
-                    || combined.contains("email")    || combined.contains("meeting")
-                    || combined.contains("slack")    || combined.contains("document")
-                    || combined.contains("file"))
-                agentList.add("knowledge");
-
-            if (agentList.isEmpty()) {
-                agentList.add("backend");
+            }
+            // Frontend code
+            else if (lower.contains("frontend") || lower.contains("react") || lower.contains("typescript") ||
+                     lower.contains("component") || lower.contains("ui") || lower.contains("css")) {
                 agentList.add("frontend");
             }
+            // QA/Testing - ONLY for explicit test/debug keywords
+            else if (lower.contains("test") || lower.contains("debug") || lower.contains("unit test") ||
+                     lower.contains("test case")) {
+                agentList.add("qa");
+            }
+            // DevOps - infrastructure specific
+            else if (lower.contains("devops") || lower.contains("kubernetes") || lower.contains("docker") ||
+                     lower.contains("monitor") || lower.contains("metrics")) {
+                agentList.add("devops");
+            }
+            // DEFAULT: Everything else goes to Knowledge
+            else {
+                agentList.add("knowledge");
+            }
+            
             return agentList;
         }
     }
@@ -707,7 +732,7 @@ public class MultiAgentCoordinator {
             this.memoryService = memoryService;
             this.skills        = Arrays.asList("search_memory", "search_emails",
                 "search_documents", "search_notes", "search_calendar", "search_contacts",
-                "web_research", "api_integration", "fetch_external_content");
+                "web_research", "api_integration", "fetch_external_content", "tavily_search");
         }
 
         @Override
@@ -739,7 +764,7 @@ public class MultiAgentCoordinator {
             }
 
             Map<String, Object> result = invokeScopedLLM(
-                "personal knowledge assistant with access to the user's indexed emails, documents, notes, and calendar",
+                "personal knowledge assistant with access to the user's indexed emails, documents, notes, calendar, and real-time web search via Tavily",
                 task, enrichedContext, focus, ignore, constraints, "knowledge", msg.streamCallback);
             this.lastExecutedTime = System.currentTimeMillis() - start;
             return handleEmptyResponse(result, "Knowledge");

@@ -12,6 +12,7 @@ agents:
       - Keep responses brief and scannable when read aloud
       - Be conversational and warm in tone
       - Handle questions about audio, voice, music, sound
+      - Access real-time information via Tavily web search for current data
       
       Guidelines:
       - Avoid long lists; use brief explanations instead
@@ -24,6 +25,7 @@ agents:
       - type: shell
       - type: think
       - type: filesystem
+      - type: tavily
 
   speech_processor:
     model: ollama/qwen3.5:4b
@@ -37,6 +39,7 @@ agents:
       - Suggest rephrasing for better TTS output
       - Identify speaker intent from voice context
       - Handle audio-specific questions
+      - Look up pronunciation, phonetic rules, and audio library references via Tavily search
       
       Output format:
       - Clean text without special characters
@@ -46,6 +49,7 @@ agents:
       
     toolsets:
       - type: think
+      - type: tavily
 
   voice_optimizer:
     model: ollama/mistral
@@ -60,8 +64,10 @@ agents:
       - Remove or explain technical symbols
       - Add natural pauses with punctuation
       - Ensure consistent pacing and flow
+      - Search for current best practices in voice optimization via Tavily if needed
       
       Output only the optimized text, no explanations.
       
     toolsets:
       - type: think
+      - type: tavily

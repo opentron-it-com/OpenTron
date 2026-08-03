@@ -1,6 +1,8 @@
 package org.opentron.backend.agents;
 
 import org.opentron.backend.util.CloudModelService;
+import org.opentron.backend.services.WebSearchService;
+import org.opentron.backend.services.NetworkPolicyService;
 import org.opentron.backend.util.OllamaCliService;
 import org.opentron.backend.util.HuggingFaceService;
 import org.slf4j.Logger;
@@ -8,10 +10,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * AgentLLMBridge - Single clean call to Ollama, no retries, no timeouts.
  * Virtual threads handle the wait; only fails if Ollama is genuinely down.
+ * 
+ * Cloud model failures automatically fall back to local Ollama.
  */
 public class AgentLLMBridge {
 
@@ -21,6 +27,7 @@ public class AgentLLMBridge {
     private final String model;
     private final boolean useHF;
     private final Map<String, String> apiKeyOverrides;
+    private final WebSearchService webSearchService;
     private static final Logger logger = LoggerFactory.getLogger(AgentLLMBridge.class);
 
     public AgentLLMBridge(OllamaCliService ollamaService, HuggingFaceService huggingFaceService, String model) {
@@ -37,6 +44,20 @@ public class AgentLLMBridge {
                     ("local".equalsIgnoreCase(System.getenv("HF_MODE")) ||
                      "api".equalsIgnoreCase(System.getenv("HF_MODE")));
         this.apiKeyOverrides = apiKeyOverrides == null ? Collections.emptyMap() : apiKeyOverrides;
+        this.webSearchService = null;
+    }
+
+    public AgentLLMBridge(OllamaCliService ollamaService, HuggingFaceService huggingFaceService, CloudModelService cloudModelService,
+                          String model, Map<String, String> apiKeyOverrides, WebSearchService webSearchService) {
+        this.ollamaService = ollamaService;
+        this.huggingFaceService = huggingFaceService;
+        this.cloudModelService = cloudModelService;
+        this.model = model != null ? model : "mistral";
+        this.useHF = System.getenv("HF_MODE") != null &&
+                    ("local".equalsIgnoreCase(System.getenv("HF_MODE")) ||
+                     "api".equalsIgnoreCase(System.getenv("HF_MODE")));
+        this.apiKeyOverrides = apiKeyOverrides == null ? Collections.emptyMap() : apiKeyOverrides;
+        this.webSearchService = webSearchService;
     }
 
     /**
@@ -47,8 +68,39 @@ public class AgentLLMBridge {
         try {
             logger.info("Querying {}...", model);
 
+            // Prepend current server date/time to the system prompt so models answer time questions correctly.
+            String now = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm z"));
+            if (systemPrompt == null) systemPrompt = "";
+            String timestampPrefix = "Current server date/time: " + now + "\n\n";
+
+            // If a web search service is available and system prompt suggests internet research,
+            // perform a quick search and include top results in the system prompt to augment context.
+            String augmentedSystem = systemPrompt;
+            try {
+                if (webSearchService != null && systemPrompt != null && systemPrompt.toLowerCase().contains("internet")) {
+                    var results = webSearchService.search(userQuestion, 3);
+                    if (results != null && !results.isEmpty()) {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("\n\nSearch results (top " + results.size() + "):\n");
+                        for (var r : results) {
+                            String title = r.getOrDefault("title", "");
+                            String link = r.getOrDefault("link", "");
+                            String snippet = r.getOrDefault("snippet", "");
+                            if (snippet.length() > 200) snippet = snippet.substring(0,200) + "...";
+                            sb.append("- ").append(title).append(" (").append(link).append("): ").append(snippet).append("\n");
+                        }
+                        augmentedSystem = systemPrompt + sb.toString();
+                    }
+                }
+            } catch (Exception e) {
+                logger.warn("WebSearch augmentation failed", e);
+            }
+
+            // Always prepend timestamp prefix so models have an authoritative current time
+            augmentedSystem = timestampPrefix + augmentedSystem;
+
             List<Map<String, String>> messages = new ArrayList<>();
-            messages.add(Map.of("role", "system", "content", systemPrompt));
+            messages.add(Map.of("role", "system", "content", augmentedSystem));
             messages.add(Map.of("role", "user", "content", userQuestion));
 
             Map<String, Object> response = invokeModel(messages);
@@ -114,8 +166,14 @@ public class AgentLLMBridge {
             if (cloudModelService == null) {
                 throw new IllegalStateException("Cloud model service not configured for model: " + model);
             }
-            logger.info("Routing cloud model {} through CloudModelService", model);
-            return cloudModelService.callCloudModel(model, messages, apiKeyOverrides).block();
+            try {
+                logger.info("Routing cloud model {} through CloudModelService", model);
+                return cloudModelService.callCloudModel(model, messages, apiKeyOverrides).block();
+            } catch (Exception e) {
+                logger.warn("Cloud model {} failed ({}), falling back to Ollama llama3.2:3b", model, e.getMessage());
+                // Fall back to local model when cloud fails
+                return ollamaService.chatCompletion("llama3.2:3b", messages).block();
+            }
         }
 
         if (useHF) {

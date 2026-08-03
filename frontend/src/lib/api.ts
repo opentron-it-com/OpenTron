@@ -311,6 +311,41 @@ export async function fetchTraces(limit: number = 50): Promise<unknown> {
   return res.json();
 }
 
+// Network policy endpoints
+export async function getNetworkPolicy(): Promise<{ allow_internet: boolean }> {
+  const res = await apiFetch(`/v1/settings/network`);
+  if (!res.ok) throw new Error(`Failed to fetch network settings: ${res.status}`);
+  return res.json();
+}
+
+export async function setNetworkPolicy(allowInternet: boolean): Promise<{ allow_internet: boolean }> {
+  const res = await apiFetch(`/v1/settings/network`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ allow_internet: allowInternet }),
+  });
+  if (!res.ok) throw new Error(`Failed to set network policy: ${res.status}`);
+  return res.json();
+}
+
+export async function getSearchKey(): Promise<{ configured: boolean; masked?: string | null }> {
+  const res = await apiFetch(`/v1/settings/search-key`);
+  if (!res.ok) throw new Error(`Failed to fetch search key status: ${res.status}`);
+  return res.json();
+}
+
+export async function setSearchKey(key: string | null, provider?: string | null): Promise<{ configured: boolean }> {
+  const body: Record<string, any> = { key };
+  if (provider !== undefined) body.provider = provider;
+  const res = await apiFetch(`/v1/settings/search-key`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(`Failed to set search key: ${res.status}`);
+  return res.json();
+}
+
 // Speech interfaces
 export interface TranscriptionResult {
   text: string;

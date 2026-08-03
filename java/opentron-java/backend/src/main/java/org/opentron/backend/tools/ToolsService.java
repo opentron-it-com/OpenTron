@@ -8,6 +8,12 @@ import java.util.Map;
 @Service
 public class ToolsService {
 
+    private final TavilyTool tavilyTool;
+
+    public ToolsService(TavilyTool tavilyTool) {
+        this.tavilyTool = tavilyTool;
+    }
+
     public List<Map<String, Object>> listTools() {
         return List.of(
                 Map.ofEntries(
@@ -92,7 +98,8 @@ public class ToolsService {
                                 "body", Map.of("type", "string", "description", "Email body content")
                         )),
                         Map.entry("capabilities", List.of("send_email"))
-                )
+                ),
+                tavilyTool.getToolDefinition()
         );
     }
 
