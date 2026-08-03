@@ -162,6 +162,21 @@ export function CoordinatorPanel() {
     }, 500);
   };
 
+  const cleanCodeContent = (code: string): string => {
+    // Remove extra spaces in Java package/import statements: java. util → java.util
+    code = code.replace(/([a-zA-Z0-9_]+)\s+\.\s+([a-zA-Z0-9_]+)/g, '$1.$2');
+    // Remove extra spaces around dots: java . util . concurrent → java.util.concurrent
+    code = code.replace(/\s*\.\s*/g, '.');
+    // Clean up multiple spaces in general (but preserve indentation)
+    const lines = code.split('\n');
+    const cleanedLines = lines.map((line) => {
+      const indentation = line?.match(/^\s*/)?.[0] || '';
+      const content = line.slice(indentation.length);
+      return indentation + content.replace(/\s{2,}/g, ' ');
+    });
+    return cleanedLines.join('\n');
+  };
+
   const renderAgentResult = (agentResult: any) => {
     if (!agentResult) return null;
 
@@ -174,11 +189,38 @@ export function CoordinatorPanel() {
         <ReactMarkdown
           components={{
             pre: (props: any) => (
-              <pre {...props} style={{ background: 'var(--color-bg)', padding: '8px', borderRadius: '4px', overflow: 'auto', fontSize: '0.75rem' }} />
+              <pre {...props} style={{ background: 'var(--color-bg)', padding: '8px', borderRadius: '4px', overflow: 'auto', fontSize: '0.75rem', margin: 0 }} />
             ),
-            code: (props: any) => (
-              <code {...props} style={{ background: props.inline ? 'var(--color-bg)' : undefined, padding: props.inline ? '2px 4px' : undefined, borderRadius: '2px' }} />
-            ),
+            code: (props: any) => {
+              const { node, inline, children, ...rest } = props;
+              let content = children?.[0] ?? '';
+              
+              // Only clean if it's a code block (not inline)
+              if (!inline && typeof content === 'string') {
+                content = cleanCodeContent(content);
+              }
+              
+              return (
+                <code {...rest} style={{ 
+                  background: inline ? 'var(--color-bg)' : undefined, 
+                  padding: inline ? '2px 4px' : undefined, 
+                  borderRadius: '2px',
+                  fontFamily: 'monospace',
+                  fontSize: inline ? '0.85rem' : '0.75rem',
+                  whiteSpace: inline ? 'nowrap' : 'pre-wrap',
+                  wordBreak: inline ? 'break-word' : 'normal'
+                }}>
+                  {content}
+                </code>
+              );
+            },
+            h1: (props: any) => <h1 {...props} style={{ fontSize: '1.25rem', fontWeight: 'bold', marginTop: '0.5rem', marginBottom: '0.25rem', color: 'var(--color-text)' }} />,
+            h2: (props: any) => <h2 {...props} style={{ fontSize: '1.1rem', fontWeight: 'bold', marginTop: '0.5rem', marginBottom: '0.25rem', color: 'var(--color-text)' }} />,
+            h3: (props: any) => <h3 {...props} style={{ fontSize: '1rem', fontWeight: 'bold', marginTop: '0.25rem', marginBottom: '0.125rem', color: 'var(--color-text)' }} />,
+            p: (props: any) => <p {...props} style={{ margin: '0.25rem 0', lineHeight: '1.4' }} />,
+            li: (props: any) => <li {...props} style={{ marginBottom: '0.125rem', lineHeight: '1.4' }} />,
+            ul: (props: any) => <ul {...props} style={{ margin: '0.25rem 0', paddingLeft: '1.25rem' }} />,
+            ol: (props: any) => <ol {...props} style={{ margin: '0.25rem 0', paddingLeft: '1.25rem' }} />,
           }}
         >
           {agentResult}

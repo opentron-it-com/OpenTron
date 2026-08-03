@@ -323,7 +323,7 @@ public class CloudModelService {
         payload.put("model", model);
         payload.put("messages", messages);
         payload.put("temperature", 0.7);
-        payload.put("max_tokens", 2000);
+        payload.put("max_tokens", 16000);
 
         String jsonPayload = objectMapper.writeValueAsString(payload);
         
@@ -549,7 +549,7 @@ public class CloudModelService {
         
         Map<String, Object> generationConfig = new LinkedHashMap<>();
         generationConfig.put("temperature", 0.7);
-        generationConfig.put("maxOutputTokens", 2000);
+        generationConfig.put("maxOutputTokens", 16000);
         payload.put("generationConfig", generationConfig);
 
         String jsonPayload = objectMapper.writeValueAsString(payload);
@@ -718,7 +718,7 @@ public class CloudModelService {
         payload.put("model", model);
         payload.put("messages", messages);
         payload.put("temperature", 0.7);
-        payload.put("max_tokens", 2000);
+        payload.put("max_tokens", 16000);
 
         String jsonPayload = objectMapper.writeValueAsString(payload);
         
@@ -798,6 +798,7 @@ public class CloudModelService {
         }
     }
 }
+
 
 
 

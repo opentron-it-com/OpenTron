@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 import org.opentron.backend.services.SearchKeyService;
 import org.opentron.backend.services.WebSearchService;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @RestController
@@ -54,7 +53,8 @@ public class SettingsController {
     public ResponseEntity<Map<String, Object>> getSearchKey() {
         if (searchKeyService == null) return ResponseEntity.status(503).body(Map.of("error", "Search key service not available"));
         String k = searchKeyService.loadKey();
-        return ResponseEntity.ok(Map.of("configured", k != null, "masked", k == null ? null : (k.length() > 8 ? k.substring(0,4) + "..." + k.substring(k.length()-4) : "****")));
+        String masked = k == null ? "not-configured" : (k.length() > 8 ? k.substring(0,4) + "..." + k.substring(k.length()-4) : "****");
+        return ResponseEntity.ok(Map.of("configured", k != null, "masked", masked));
     }
 
     @PostMapping("/search-key")

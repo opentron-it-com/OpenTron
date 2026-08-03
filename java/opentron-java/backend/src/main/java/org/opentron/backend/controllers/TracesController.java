@@ -37,7 +37,7 @@ public class TracesController {
                     step.put("duration_ms", 50 + Math.random() * 200);
                     Map<String, Object> data = new HashMap<>();
                     data.put("tokens", 50 + (int)(Math.random() * 100));
-                    data.put("model", "mistral");
+                    data.put("model", "gemini-3.6-flash");
                     step.put("data", data);
                     steps.add(step);
                 }
@@ -76,7 +76,7 @@ public class TracesController {
                     step.put("duration_ms", 50 + Math.random() * 200);
                     Map<String, Object> data = new HashMap<>();
                     data.put("tokens", 50 + (int)(Math.random() * 100));
-                    data.put("model", "mistral");
+                    data.put("model", "llama3.2:3b");
                     step.put("data", data);
                     steps.add(step);
                 }
@@ -112,7 +112,7 @@ public class TracesController {
             data.put("input", "User query " + i);
             data.put("output", "Model response " + i);
             data.put("tokens", 125);
-            data.put("model", "mistral");
+            data.put("model", "gemini-3.6-flash");
             step.put("data", data);
             steps.add(step);
         }

@@ -178,37 +178,29 @@ public class ModelSelectorService {
 
     /**
      * Knowledge specialist: general Q&A, reasoning, explanations
-     * PRIORITY: Cloud FIRST → Local models
-     */
-        /**
-     * Knowledge specialist: general Q&A, reasoning, explanations
-     * PRIORITY: Claude Haiku (fast, cheap) ? Gemini ? Local models
+     * PRIORITY: Claude Haiku (fast, cheap) → Gemini → Local models
      */
     private String selectKnowledgeModel() {
         // CLOUD FIRST - Claude Haiku for speed and cost
         if (hasModel("claude-haiku-4-5")) {
-            logger.info("Knowledge ? claude-haiku-4-5 (Anthropic Haiku - PRIORITY)");
-            return "claude-haiku-4-5";
-        }
-        if (hasModel("claude-haiku-4-5")) {
-            logger.info("Knowledge ? claude-haiku-4-5 (Anthropic Haiku - PRIORITY)");
+            logger.info("Knowledge → claude-haiku-4-5 (Anthropic Haiku - PRIORITY)");
             return "claude-haiku-4-5";
         }
         if (hasModel("gemini-3.6-flash")) {
-            logger.info("Knowledge ? gemini-3.6-flash (Google Cloud - PRIORITY)");
+            logger.info("Knowledge → gemini-3.6-flash (Google Cloud - PRIORITY)");
             return "gemini-3.6-flash";
         }
         
         // LOCAL FALLBACK
         if (hasModel("llama3.2:3b")) {
-            logger.info("Knowledge ? llama3.2:3b (Local fallback)");
+            logger.info("Knowledge → llama3.2:3b (Local fallback)");
             return "llama3.2:3b";
         }
         if (hasModel("qwen2.5-coder:7b")) {
-            logger.info("Knowledge ? qwen2.5-coder:7b (Local fallback)");
+            logger.info("Knowledge → qwen2.5-coder:7b (Local fallback)");
             return "qwen2.5-coder:7b";
         }
-        logger.info("Knowledge ? llama3.2:1b (Last resort)");
+        logger.info("Knowledge → llama3.2:1b (Last resort)");
         return "llama3.2:1b";
     }
 
@@ -284,18 +276,33 @@ public class ModelSelectorService {
         boolean hasGoogle = cloudModelService.hasApiKey("google", apiKeyOverrides);
         boolean hasOpenRouter = cloudModelService.hasApiKey("openrouter", apiKeyOverrides);
 
+        // Google models - add if key present, remove if absent
         if (hasGoogle) {
             modelCache.putIfAbsent("gemini-3.6-flash", "available");
             modelCache.putIfAbsent("gemini-3.1-pro", "available");
             modelCache.putIfAbsent("gemini-2.5-flash", "available");
+        } else {
+            modelCache.remove("gemini-3.6-flash");
+            modelCache.remove("gemini-3.1-pro");
+            modelCache.remove("gemini-2.5-flash");
         }
+
+        // Anthropic models - add if key present, remove if absent
         if (hasAnthropic) {
             modelCache.putIfAbsent("claude-opus-4-6", "available");
             modelCache.putIfAbsent("claude-sonnet-4-6", "available");
             modelCache.putIfAbsent("claude-haiku-4-5", "available");
+        } else {
+            modelCache.remove("claude-opus-4-6");
+            modelCache.remove("claude-sonnet-4-6");
+            modelCache.remove("claude-haiku-4-5");
         }
+
+        // OpenRouter models - add if key present, remove if absent
         if (hasOpenRouter) {
             modelCache.putIfAbsent("openrouter/auto", "available");
+        } else {
+            modelCache.remove("openrouter/auto");
         }
     }
 
@@ -321,7 +328,3 @@ public class ModelSelectorService {
         );
     }
 }
-
-
-
-
