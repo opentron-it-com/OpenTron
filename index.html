@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Open Tron | High-Density AI Agent Engine</title>
-    <meta name="description" content="Open Tron is a stateful multi-agent AI orchestrator engineered on Java 21 Project Loom for ultra-low infrastructure cost and high throughput.">
+    <title>Open Tron | Protect Your Alpha. Local AI Agent Engine.</title>
+    <meta name="description" content="Keep your business logic and alpha private. Open Tron is a local-first, stateful multi-agent AI orchestrator on Java 21 Project Loom for zero cloud telemetry and low cost.">
 
     <!-- Schema & Meta -->
-    <meta property="og:title" content="Open Tron | High-Density AI Orchestrator">
-    <meta property="og:description" content="Production-grade, highly concurrent, stateful AI multi-agent architecture running natively on Java 21, Spring Boot, and PostgreSQL.">
+    <meta property="og:title" content="Open Tron | Protect Your Alpha with Local AI Orchestration">
+    <meta property="og:description" content="Zero cloud data leaks. No third-party tracking. Production-grade multi-agent architecture running locally on Java 21, Spring Boot, and PostgreSQL.">
     <meta property="og:image" content="https://opentron.it.com/assets/OpenTron_Horizontal_Logo.png">
-    <meta name="title" content="Open Tron | The Open-Source AI Orchestrator for Everyone">
+    <meta name="title" content="Open Tron | The Local-First AI Orchestrator That Doesn't Steal Your Alpha">
     <meta name="author" content="OpenTron Contributors">
     <!-- Google Search Site Name Schema -->
     <script type="application/ld+json">
@@ -26,18 +26,19 @@
     <!-- Open Graph / Facebook / LinkedIn -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://opentron.it.com/">
-    <meta property="og:site_name" content="Open Tron - The Open-Source AI Orchestrator for Everyone">
-    <meta property="og:title" content="Open Tron - The Open-Source AI Orchestrator for Everyone">
-    <meta property="og:description" content="Smart Orchestration: intent-aware domain routing, multi-model tiering (Claude Sonnet/Opus/Haiku/Gemini), and local Ollama fallback for optimal latency and cost performance. OpenTron is a Java 21 Project Loom multi-agent platform engineered for high-concurrency workflows and low infrastructure overhead. The system powers multi-interface clients, with desktop versions live on the Microsoft Store in both Free and Pro editions.">
+    <meta property="og:site_name" content="Open Tron - Keep Your Alpha Local">
+    <meta property="og:title" content="Open Tron - Local-First AI Orchestrator That Protects Your Business Logic">
+    <meta property="og:description" content="Don't leak your trade secrets to cloud LLM pipelines. OpenTron is a Java 21 Project Loom multi-agent platform engineered for complete local sovereignty, rock-solid stability, and fraction-of-the-cost execution. Live on the Microsoft Store.">
     <meta property="og:image:alt" content="Open Tron AI Agent Orchestrator Logo">
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://opentron.it.com/">
-    <meta name="twitter:title" content="Open Tron | The Open-Source AI Orchestrator for Everyone">
-    <meta name="twitter:description" content="Open Tron is a stateful multi-agent AI orchestrator. Run autonomous workflows easily with Open Tron on Java. Download the open-source code on GitHub.">
+    <meta name="twitter:title" content="Open Tron | Protect Your Alpha. Run AI Agents Locally.">
+    <meta name="twitter:description" content="Your workflows are your competitive edge. Stop sending them to cloud data vacuums. Build securely on Java 21.">
     <meta name="twitter:image" content="https://opentron.it.com/assets/OpenTron_Horizontal_Logo.png">
     <link rel="canonical" href="https://opentron.it.com/" />
+
     
     <!-- Favicon & Apple Icon -->
     <link rel="icon" type="image/png" href="{{ '/assets/tron.png' | relative_url }}">
@@ -107,15 +108,15 @@
         <!-- HERO SECTION -->
         <header class="text-center space-y-6 pt-2">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold uppercase tracking-wider">
-                ⚡ High-Density AI Orchestration
+                🔒 Zero Cloud Telemetry • 100% Data Sovereignty
             </div>
             
             <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-tight">
-                Open Tron: The AI Smart Agent Network Built for Everyone
+                Protect Your Alpha. Stop Leaking Your Business Logic to the Cloud.
             </h1>
             
             <p class="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
-                How we engineered a high-concurrency, stateful multi-agent engine on a $1,000 budget using <span class="text-teal-400 font-semibold">Java 21</span>, <span class="text-teal-400 font-semibold">Spring Boot</span>, and <span class="text-teal-400 font-semibold">PostgreSQL</span>.
+                Most AI tools act as data vacuums. <span class="text-teal-400 font-semibold">Open Tron</span> is a local-first, stateful multi-agent engine built on <span class="text-teal-400 font-semibold">Java 21</span> that gives you elite performance without sacrificing your competitive edge or breaking the bank.
             </p>
 
             <div class="pt-2 flex flex-wrap items-center justify-center gap-4">
@@ -132,36 +133,58 @@
             </div>
         </header>
 
-        <!-- NAVIGATION TABS -->
-        <div class="border-b border-slate-800 flex justify-center space-x-2 sm:space-x-8">
-            <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn active px-4 py-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent transition hover:text-teal-400">
-                🏛️ Architecture & Overview
+        <!-- NAVIGATION TABS (Clean wrap layout) -->
+        <div class="border-b border-slate-800 flex flex-wrap justify-center items-center gap-2 sm:gap-4 pb-1">
+            <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn active px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-400 border-b-2 border-transparent transition hover:text-teal-400 rounded-lg">
+                🏛️ Why Local?
             </button>
-            <button onclick="switchTab('benchmarks')" id="tab-benchmarks" class="tab-btn px-4 py-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent transition hover:text-teal-400">
-                ⚡ Empirical Benchmarks
+            <button onclick="switchTab('arch')" id="tab-arch" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-400 border-b-2 border-transparent transition hover:text-teal-400 rounded-lg">
+                🏗️ Architecture
             </button>
-            <button onclick="switchTab('contact')" id="tab-contact" class="tab-btn px-4 py-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent transition hover:text-teal-400">
-                💼 Business & Inquiries
+            <button onclick="switchTab('benchmarks')" id="tab-benchmarks" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-400 border-b-2 border-transparent transition hover:text-teal-400 rounded-lg">
+                ⚡ Benchmarks
+            </button>
+            <button onclick="switchTab('contact')" id="tab-contact" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-400 border-b-2 border-transparent transition hover:text-teal-400 rounded-lg">
+                💼 Inquiries
             </button>
         </div>
 
-        <!-- TAB 1: ARCHITECTURE & OVERVIEW -->
+        <!-- TAB 1: WHY LOCAL? (MANIFESTO) -->
         <div id="content-overview" class="tab-content space-y-12">
-            <!-- MANIFESTO -->
-            <section class="bg-slate-900/40 p-6 sm:p-8 rounded-2xl border border-slate-800 space-y-4 text-slate-300 text-base leading-relaxed">
-                <h3 class="text-xl font-bold text-white mb-2">The Value-Engineering Manifesto</h3>
-                <p>
-                    We didn't have a multi-million dollar venture capital check, a corporate credit card to throw at AWS, or a team of 50 developers.
-                </p>
-                <p>
-                    What we had was a <strong class="text-white font-semibold">$1,000 server budget</strong> and a refusal to accept the sloppy, unoptimized engineering choices that have taken over modern AI backend development.
-                </p>
-                <p>
-                    While elite tech spaces are pushing copy-paste Python scripts wrapped in layers of cloud infrastructure to run multi-agent systems, <strong class="text-teal-400 font-bold">OpenTron</strong> runs natively on <strong class="text-white">Java 21 Project Loom</strong>, delivering high-density execution with minimum resource requirements.
-                </p>
-            </section>
+    
+            <section class="space-y-6">
+                <div class="border-l-4 border-teal-500 pl-4">
+                    <h2 class="text-2xl font-bold text-white">Engineered for Cost, Safety, and Stability</h2>
+                    <p class="text-slate-400 text-sm mt-1">A decoupled, stateful multi-agent system built to eliminate bloat and protect code.</p>
+                </div>
 
-            <!-- ARCHITECTURE -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+                    <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-800 space-y-3">
+                        <h3 class="text-lg font-bold text-teal-400">🛡️ 1. Safer (Zero Alpha Leak)</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            No telemetry vacuums. Your custom agent frameworks, database transactions, and business logic execute right on your machine or local infrastructure.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-800 space-y-3">
+                        <h3 class="text-lg font-bold text-teal-400">📉 2. Cheaper </h3>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Moving away from heavy cloud API credit consumption or inefficient Python-based orchestration stacks (which often suffer from high overhead and process sprawl) keeps resource expenditure tightly controlled.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-800 space-y-3">
+                        <h3 class="text-lg font-bold text-teal-400">⚙️ 3. Stable (Compile-Time)</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Move away from fragile script-based wrappers. Strong typing and stateful architecture catch bugs long before they hit production execution.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- TAB 2: ARCHITECTURE & OVERVIEW -->
+        <div id="content-arch" class="tab-content hidden space-y-10">
             <section class="space-y-6">
                 <div class="border-l-4 border-teal-500 pl-4">
                     <h2 class="text-2xl font-bold text-white">System Architecture Overview</h2>
@@ -200,7 +223,7 @@
             </section>
         </div>
 
-        <!-- TAB 2: BENCHMARKS & PERFORMANCE -->
+        <!-- TAB 3: BENCHMARKS & PERFORMANCE -->
         <div id="content-benchmarks" class="tab-content hidden space-y-10">
             <div class="border-l-4 border-teal-500 pl-4">
                 <h2 class="text-2xl font-bold text-white">Empirical Benchmark Analysis</h2>
@@ -345,7 +368,7 @@
             </div>
         </div>
 
-        <!-- TAB 3: BUSINESS & CONTACT FORM -->
+        <!-- TAB 4: BUSINESS & CONTACT FORM -->
         <div id="content-contact" class="tab-content hidden max-w-2xl mx-auto space-y-8">
             <div class="text-center space-y-2">
                 <h2 class="text-2xl font-bold text-white">Get in Touch</h2>
