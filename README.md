@@ -5,9 +5,9 @@
     width="450">
 </p>
 
-<h1 align="center">JVMAI <sub style="font-size: 50%;">formerly Open Tron</sub></h1>
+<h1 align="center">JVMAI <sub style="font-size: 30%;">formerly Open Tron</sub></h1>
 <p align="center">
-  <strong>Personal AI on Personal Devices | High-Density Java AI Agent Engine & Confidential TEE Runtime</strong>
+  <strong>Personal AI on Personal Devices | Enterprise AI Agents at JVM Scale. Zero Python Bloat & Confidential TEE Runtime</strong>
 </p>
 
 <h3 align="center">
