@@ -18,7 +18,7 @@
   <a href="https://opentron.it.com">Website</a> •
   <a href="https://github.com/opentron-it-com/OpenTron/blob/main/benchmarks/OpenTron_Benchmark_Executive_Summary.pdf">Benchmarks (PDF)</a> •
   <a href="https://www.producthunt.com/products/opentron">Product Hunt</a> •
-  <a href="#-enterprise-confidential-ai-cjae">Confidential AI Spec</a>
+  <a href="#enterprise-confidential-ai-cjae">Confidential AI Spec</a> • 
 </p>
 
 ---
@@ -43,7 +43,7 @@ Modern AI frameworks predominantly rely on Python stacks (e.g., FastAPI, LangCha
 By leveraging **Java 21 Virtual Threads (Project Loom)**, **Spring Boot**, and strongly typed contracts, JVMAI executes agent orchestration natively inside a single JVM container, completely eliminating unnecessary microservice overhead.
 
 ---
-
+<a id="enterprise-confidential-ai-cjae"></a>
 ## 🛡️ Enterprise Confidential AI (CJAE Architecture)
 
 For enterprise workloads demanding zero-trust security, JVMAI integrates the **Confidential Java AI Engine (CJAE)** specification. This turns the JVM into a secure, hardware-isolated fortress for sensitive data, LLM weights, and vector caches.
