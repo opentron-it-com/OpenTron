@@ -230,9 +230,139 @@
 
         <!-- TAB 3: BENCHMARKS & PERFORMANCE -->
         <div id="content-benchmarks" class="tab-content hidden space-y-10">
+            <section id="latest-benchmark" class="space-y-6">
+                <div class="border-l-4 border-teal-500 pl-4">
+                    <div class="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-3">
+                        <h2 class="text-2xl font-bold text-white">Latest Reproducible Benchmark</h2>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-teal-500/10 text-teal-300 border border-teal-500/30">
+                            15 Nov 2026
+                        </span>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-2">
+                        OpenTron Java 21 virtual threads compared with FastAPI, Celery, and Redis on the same host.
+                        Each stack was capped at 2 vCPU and 2 GiB.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900/60 rounded-xl border border-slate-800 overflow-hidden">
+                    <div class="p-4 border-b border-slate-800">
+                        <h3 class="font-bold text-white text-base">Throughput and p99 by concurrent batch requests</h3>
+                        <p class="text-xs text-slate-400 mt-1">Each batch starts 10 simulated I/O tasks; all requests succeeded.</p>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full min-w-[760px] text-left text-xs sm:text-sm text-slate-300">
+                            <thead class="bg-slate-950 text-xs uppercase font-semibold text-slate-400 border-b border-slate-800">
+                                <tr>
+                                    <th scope="col" class="py-3 px-4">Concurrent batches</th>
+                                    <th scope="col" class="py-3 px-4">Tasks in flight</th>
+                                    <th scope="col" class="py-3 px-4 text-teal-400">Java tasks/s</th>
+                                    <th scope="col" class="py-3 px-4">Java p99</th>
+                                    <th scope="col" class="py-3 px-4 text-sky-300">Python tasks/s</th>
+                                    <th scope="col" class="py-3 px-4">Python p99</th>
+                                    <th scope="col" class="py-3 px-4">Requests</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800/50 font-mono text-xs">
+                                <tr class="hover:bg-slate-800/30">
+                                    <td class="py-3 px-4 font-semibold text-white">1</td>
+                                    <td class="py-3 px-4">10</td>
+                                    <td class="py-3 px-4 text-teal-300">84.51</td>
+                                    <td class="py-3 px-4">145.65 ms</td>
+                                    <td class="py-3 px-4 text-sky-300">57.11</td>
+                                    <td class="py-3 px-4">269.53 ms</td>
+                                    <td class="py-3 px-4">240/240 each</td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/30">
+                                    <td class="py-3 px-4 font-semibold text-white">8</td>
+                                    <td class="py-3 px-4">80</td>
+                                    <td class="py-3 px-4 text-teal-300">670.06</td>
+                                    <td class="py-3 px-4">138.15 ms</td>
+                                    <td class="py-3 px-4 text-sky-300">48.29</td>
+                                    <td class="py-3 px-4">6,917.49 ms</td>
+                                    <td class="py-3 px-4">240/240 each</td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/30">
+                                    <td class="py-3 px-4 font-semibold text-white">32</td>
+                                    <td class="py-3 px-4">320</td>
+                                    <td class="py-3 px-4 text-teal-300">2,378.21</td>
+                                    <td class="py-3 px-4">179.19 ms</td>
+                                    <td class="py-3 px-4 text-sky-300">51.25</td>
+                                    <td class="py-3 px-4">16,998.63 ms</td>
+                                    <td class="py-3 px-4">240/240 each</td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/30">
+                                    <td class="py-3 px-4 font-semibold text-white">64</td>
+                                    <td class="py-3 px-4">640</td>
+                                    <td class="py-3 px-4 text-teal-300">4,166.00</td>
+                                    <td class="py-3 px-4">158.15 ms</td>
+                                    <td class="py-3 px-4 text-sky-300">58.72</td>
+                                    <td class="py-3 px-4">37,979.16 ms</td>
+                                    <td class="py-3 px-4">240/240 each</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800">
+                        <h3 class="font-bold text-white text-sm mb-3">Container-group memory</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs text-slate-300">
+                                <thead class="text-slate-500 uppercase text-[10px] border-b border-slate-800">
+                                    <tr>
+                                        <th scope="col" class="py-2 pr-3">Stack</th>
+                                        <th scope="col" class="py-2 px-2">Idle</th>
+                                        <th scope="col" class="py-2 px-2">Peak</th>
+                                        <th scope="col" class="py-2 pl-2">Increase</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800/50">
+                                    <tr>
+                                        <th scope="row" class="py-2 pr-3 font-medium text-teal-300">Java</th>
+                                        <td class="py-2 px-2">495.6 MiB</td>
+                                        <td class="py-2 px-2">495.8 MiB</td>
+                                        <td class="py-2 pl-2">0.2 MiB</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="py-2 pr-3 font-medium text-sky-300">Python + Redis</th>
+                                        <td class="py-2 px-2">1,120.1 MiB</td>
+                                        <td class="py-2 px-2">1,135.3 MiB</td>
+                                        <td class="py-2 pl-2">15.2 MiB</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-[11px] leading-relaxed text-slate-500 mt-3">
+                            Memory stress: 2 simultaneous requests, 500 tasks each, 500 ms simulated delay; both stacks completed 2/2 requests.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <h3 class="font-bold text-white text-sm">Method and scope</h3>
+                        <p class="text-xs leading-relaxed text-slate-400">
+                            Host: Intel Core i7-12800H, 14 physical / 20 logical cores, 31.7 GiB RAM.
+                            Each task waits 100 ms to model blocking I/O. Python uses four Uvicorn processes,
+                            30 Celery prefork slots, and Redis; its memory total includes Redis.
+                        </p>
+                        <p class="text-xs leading-relaxed text-slate-400">
+                            This is a synthetic scheduling benchmark, not real LLM inference or a full agent,
+                            database, or connector workload. It does not establish a general claim about all Python frameworks.
+                        </p>
+                        <div class="flex flex-wrap gap-4 pt-1 text-xs">
+                            <a href="benchmarks/REPRODUCIBLE_BENCHMARK_REPORT.md" class="text-teal-400 hover:text-teal-300 underline underline-offset-4">Method and caveats</a>
+                            <a href="benchmarks/reproducible_benchmark_results.json" class="text-teal-400 hover:text-teal-300 underline underline-offset-4">Raw measurements</a>
+                            <a href="benchmarks/OpenTron_Benchmark_Executive_Summary.pdf" class="text-teal-400 hover:text-teal-300 underline underline-offset-4">Executive summary PDF</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="border-slate-800">
+
             <div class="border-l-4 border-teal-500 pl-4">
-                <h2 class="text-2xl font-bold text-white">Empirical Benchmark Analysis</h2>
-                <p class="text-slate-400 text-sm mt-1">Measured under a simulated 500ms LLM API task latency profile.</p>
+                <h2 class="text-2xl font-bold text-white">Historical Benchmark Results (July 2024)</h2>
+                <p class="text-slate-400 text-sm mt-1">Legacy run shown for context only; its environment and workload are not directly comparable to the current controlled benchmark.</p>
             </div>
 
             <!-- KPI Cards -->
@@ -247,7 +377,7 @@
                 </div>
 
                 <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800">
-                    <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Success Rate</div>
+                    <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Historical Java Success</div>
                     <div class="mt-2 flex items-baseline justify-between">
                         <span class="text-2xl sm:text-3xl font-extrabold text-emerald-400">100%</span>
                         <span class="text-xs font-mono text-emerald-400/80">9.1k / 9.1k</span>
@@ -265,12 +395,12 @@
                 </div>
 
                 <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800">
-                    <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Python Baseline</div>
+                    <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Legacy Python at 10</div>
                     <div class="mt-2 flex items-baseline justify-between">
                         <span class="text-2xl sm:text-3xl font-extrabold text-rose-500">0%</span>
                         <span class="text-xs font-semibold text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20">FAILED</span>
                     </div>
-                    <p class="mt-1 text-xs text-slate-400">Connection timeouts</p>
+                    <p class="mt-1 text-xs text-slate-400">0/100; connection refused</p>
                 </div>
             </div>
 
@@ -300,7 +430,7 @@
             <!-- Benchmark Execution Table -->
             <div class="bg-slate-900/60 rounded-xl border border-slate-800 overflow-hidden">
                 <div class="p-4 border-b border-slate-800">
-                    <h3 class="font-bold text-white text-base">Benchmark Execution Matrix</h3>
+                    <h3 class="font-bold text-white text-base">Historical Benchmark Execution Matrix</h3>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs sm:text-sm text-slate-300">
@@ -335,7 +465,7 @@
                                 <td class="py-3.5 px-4">24.72 ms</td>
                                 <td class="py-3.5 px-4">37.02 ms</td>
                                 <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">100% PASS</span></td>
-                                <td class="py-3.5 px-4"><span class="text-rose-400">UNRESPONSIVE</span></td>
+                                <td class="py-3.5 px-4 text-slate-500">Not recorded</td>
                             </tr>
                             <tr class="hover:bg-slate-800/30">
                                 <td class="py-3.5 px-4 font-semibold text-white">100</td>
@@ -345,7 +475,7 @@
                                 <td class="py-3.5 px-4">49.61 ms</td>
                                 <td class="py-3.5 px-4">54.98 ms</td>
                                 <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">100% PASS</span></td>
-                                <td class="py-3.5 px-4"><span class="text-rose-400">UNRESPONSIVE</span></td>
+                                <td class="py-3.5 px-4 text-slate-500">Not recorded</td>
                             </tr>
                             <tr class="hover:bg-slate-800/30">
                                 <td class="py-3.5 px-4 font-semibold text-white">500</td>
@@ -355,7 +485,7 @@
                                 <td class="py-3.5 px-4">155.82 ms</td>
                                 <td class="py-3.5 px-4">158.51 ms</td>
                                 <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">100% PASS</span></td>
-                                <td class="py-3.5 px-4"><span class="text-rose-400">UNRESPONSIVE</span></td>
+                                <td class="py-3.5 px-4 text-slate-500">Not recorded</td>
                             </tr>
                             <tr class="hover:bg-slate-800/30">
                                 <td class="py-3.5 px-4 font-semibold text-white">1000</td>
@@ -365,7 +495,7 @@
                                 <td class="py-3.5 px-4">318.33 ms</td>
                                 <td class="py-3.5 px-4">341.10 ms</td>
                                 <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">100% PASS</span></td>
-                                <td class="py-3.5 px-4"><span class="text-rose-400">UNRESPONSIVE</span></td>
+                                <td class="py-3.5 px-4 text-slate-500">Not recorded</td>
                             </tr>
                         </tbody>
                     </table>
