@@ -7,7 +7,7 @@
 
 <h1 align="center">Open Tron</h1>
 <p align="center">
-  <strong>Personal AI on Personal Devices | High-Density Java AI Agent Engine</strong>
+  <strong>The Sovereign, High-Density Agent Runtime for the Global Enterprise.</strong>
 </p>
 
 <h3 align="center">
