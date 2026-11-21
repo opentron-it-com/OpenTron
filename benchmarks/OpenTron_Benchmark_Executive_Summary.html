@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenTron Benchmark Executive Summary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #273746;
+            background-color: #f5f7fa;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .page {
+            page-break-after: always;
+            padding: 40px;
+            min-height: 100vh;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .page:last-child {
+            border-bottom: none;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #d7e0e5;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #12243a;
+        }
+        
+        .page-number {
+            color: #5e6b75;
+            font-size: 14px;
+        }
+        
+        h1 {
+            font-size: 28px;
+            color: #12243a;
+            margin: 20px 0 10px 0;
+            font-weight: 600;
+        }
+        
+        h2 {
+            font-size: 18px;
+            color: #12243a;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+        
+        h3 {
+            font-size: 13px;
+            color: #0c9488;
+            margin: 15px 0 10px 0;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            color: #5e6b75;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .callout {
+            background-color: #eef4f6;
+            border-left: 3px solid #0c9488;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .callout.warning {
+            background-color: #fff4e5;
+            border-left-color: #f97316;
+        }
+        
+        .callout-title {
+            font-weight: 600;
+            color: #12243a;
+            margin-bottom: 8px;
+        }
+        
+        .callout-text {
+            font-size: 13px;
+            color: #273746;
+            line-height: 1.5;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 12px;
+        }
+        
+        th {
+            background-color: #12243a;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid #d7e0e5;
+        }
+        
+        td {
+            padding: 10px;
+            border: 1px solid #d7e0e5;
+            background-color: white;
+        }
+        
+        tr:nth-child(even) td {
+            background-color: #eef4f6;
+        }
+        
+        .run-info {
+            background-color: #f9fafb;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            font-size: 13px;
+            color: #5e6b75;
+        }
+        
+        .run-info-item {
+            display: inline-block;
+            margin-right: 20px;
+            margin-bottom: 8px;
+        }
+        
+        .key {
+            font-weight: 600;
+            color: #12243a;
+        }
+        
+        .value {
+            color: #5e6b75;
+        }
+        
+        .metric-highlight {
+            background-color: #fffbeb;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #12243a;
+        }
+        
+        .metric-label {
+            font-size: 13px;
+            color: #5e6b75;
+            margin-top: 5px;
+        }
+        
+        .note {
+            font-size: 12px;
+            color: #5e6b75;
+            line-height: 1.5;
+            margin: 15px 0;
+        }
+        
+        .governance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .governance-card {
+            border: 1px solid #d7e0e5;
+            border-radius: 4px;
+            padding: 15px;
+            background-color: #fafbfc;
+        }
+        
+        .governance-card h4 {
+            font-size: 12px;
+            color: #12243a;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .governance-card p {
+            font-size: 12px;
+            color: #5e6b75;
+            line-height: 1.4;
+        }
+        
+        .sources {
+            background-color: #f0f9ff;
+            border-left: 3px solid #0284c7;
+            padding: 12px;
+            margin: 15px 0;
+            font-size: 12px;
+            color: #5e6b75;
+        }
+        
+        .sources strong {
+            color: #12243a;
+        }
+        
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 11px;
+        }
+        
+        .stack-comparison {
+            margin: 15px 0;
+        }
+        
+        .stack-row {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #fafbfc;
+            border-radius: 4px;
+        }
+        
+        .stack-label {
+            font-weight: 600;
+            color: #12243a;
+            font-size: 13px;
+        }
+        
+        .stack-value {
+            color: #5e6b75;
+            font-size: 13px;
+        }
+        
+        @media print {
+            body {
+                background-color: white;
+            }
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+            .page {
+                page-break-after: always;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page 1: Current Benchmark Results -->
+        <div class="page">
+            <div class="header">
+                <div class="logo">OPENTRON</div>
+                <div class="page-number">1</div>
+            </div>
+            
+            <h1>OpenTron Benchmark Executive Summary</h1>
+            <p class="subtitle">Java 21 virtual threads compared with a FastAPI/Celery/Redis baseline</p>
+            
+            <div class="callout">
+                <div class="callout-title">Key Finding: 64 concurrent batch requests</div>
+                <div class="callout-text">
+                    At the highest concurrency level (64 concurrent batch requests = 640 tasks in flight), 
+                    Java measured <strong>4,166.0 tasks/s at 115.85 ms p50</strong> end-to-end; 
+                    Python measured <strong>58.72 tasks/s at 6,297.98 ms p50</strong>.
+                </div>
+            </div>
+            
+            <h2>Current Controlled Comparison</h2>
+            
+            <div class="run-info">
+                <div class="run-info-item">
+                    <span class="key">Run Date:</span> 
+                    <span class="value">15 Nov 2026, 18:20 UTC</span>
+                </div>
+                <div class="run-info-item">
+                    <span class="key">CPU:</span> 
+                    <span class="value">12th Gen Intel Core i7-12800H</span>
+                </div>
+                <div class="run-info-item">
+                    <span class="key">Cores:</span> 
+                    <span class="value">14 physical / 20 logical</span>
+                </div>
+                <div class="run-info-item">
+                    <span class="key">RAM:</span> 
+                    <span class="value">31.7 GiB</span>
+                </div>
+                <div class="run-info-item">
+                    <span class="key">Docker:</span> 
+                    <span class="value">29.6.1</span>
+                </div>
+            </div>
+            
+            <h3>Throughput and Latency by Concurrency Level</h3>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Concurrent Batches</th>
+                        <th>Tasks in Flight</th>
+                        <th>Java (tasks/s)</th>
+                        <th>Java p99 (ms)</th>
+                        <th>Python (tasks/s)</th>
+                        <th>Python p99 (ms)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>10</td>
+                        <td>84.51</td>
+                        <td>145.65</td>
+                        <td>57.11</td>
+                        <td>269.53</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>80</td>
+                        <td>670.06</td>
+                        <td>138.15</td>
+                        <td>48.29</td>
+                        <td>6,917.49</td>
+                    </tr>
+                    <tr>
+                        <td>32</td>
+                        <td>320</td>
+                        <td>2,378.21</td>
+                        <td>179.19</td>
+                        <td>51.25</td>
+                        <td>16,998.63</td>
+                    </tr>
+                    <tr>
+                        <td>64</td>
+                        <td>640</td>
+                        <td>4,166.0</td>
+                        <td>158.15</td>
+                        <td>58.72</td>
+                        <td>37,979.16</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="note">
+                <strong>Interpretation:</strong> Each HTTP batch starts 10 tasks with a 100 ms simulated I/O wait. 
+                Each stack was capped at 2 vCPU and 2 GiB; the Python cap is split among FastAPI, three Celery workers 
+                (30 prefork slots total), and Redis. p99 is end-to-end batch latency using nearest-rank percentile. 
+                Both stacks completed all 240 requests at every concurrency level.
+            </div>
+            
+            <h3>Memory Usage</h3>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stack</th>
+                        <th>Requests</th>
+                        <th>Idle (MiB)</th>
+                        <th>Peak (MiB)</th>
+                        <th>Peak Increase (MiB)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>opentron-java</td>
+                        <td>240/240</td>
+                        <td>478.8</td>
+                        <td>495.9</td>
+                        <td>17.1</td>
+                    </tr>
+                    <tr>
+                        <td>python-celery</td>
+                        <td>240/240</td>
+                        <td>1,104.3</td>
+                        <td>1,121.2</td>
+                        <td>17.0</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>Test Conditions</h3>
+            
+            <p class="note">
+                Each HTTP batch starts 10 tasks with a 100 ms simulated I/O wait. Each stack was capped at 
+                2 vCPU and 2 GiB; the Python cap is split among FastAPI, three Celery workers (30 prefork slots total), 
+                and Redis. p99 is end-to-end batch latency using nearest-rank percentile. The memory test runs 
+                2 simultaneous requests of 500 tasks at 500 ms delay.
+            </p>
+            
+            <div class="callout warning">
+                <div class="callout-title">⚠️ Scope Disclaimer</div>
+                <div class="callout-text">
+                    This is a controlled I/O-wait scheduling benchmark, not an LLM, database, or full multi-agent 
+                    reasoning workload. It does not establish a general claim about all Python or enterprise frameworks.
+                </div>
+            </div>
+            
+            <p class="note" style="margin-top: 20px;">
+                <strong>Python Implementation Note:</strong> Each API process serializes Celery group-result collection 
+                through its shared Redis result consumer; task execution remains concurrent. This is part of the measured 
+                baseline and contributes to its high-concurrency tail latency.
+            </p>
+        </div>
+        
+        <!-- Page 2: Governance Building Blocks -->
+        <div class="page">
+            <div class="header">
+                <div class="logo">OPENTRON</div>
+                <div class="page-number">2</div>
+            </div>
+            
+            <h2>Deterministic Governance Building Blocks</h2>
+            
+            <p class="note" style="margin-bottom: 20px;">
+                OpenTron exposes several application-level control points relevant to regulated deployments. 
+                They support explicit configuration and state management; they are not, by themselves, a compliance 
+                certification or a formal proof of policy correctness.
+            </p>
+            
+            <h3>Control Surfaces</h3>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Control Surface</th>
+                        <th>Implementation-backed Capability</th>
+                        <th>Boundary / Operational Responsibility</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Typed contracts</strong></td>
+                        <td>Java records define gateway principals and API request/response shapes. GatewayPrincipal validates bounded identity/scope fields and freezes its scope set.</td>
+                        <td>Typed boundaries make inputs explicit; they do not prove every business policy or data flow is valid.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Persistent state</strong></td>
+                        <td>Default/production configuration supports PostgreSQL, Flyway schema migrations, JPA repositories, and transactional storage services. Desktop mode uses a file-backed H2 database.</td>
+                        <td>Backups, retention, access control, and recovery objectives remain deployment responsibilities. The performance benchmark did not exercise the database.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Network & model routing</strong></td>
+                        <td>A central network policy gates cloud-model and web-search paths; when outbound internet is disabled, routing selects local Ollama. The policy is stored under ~/.opentron.</td>
+                        <td>The default allows internet, cloud routes remain available when enabled, and policy-file I/O failures are currently best-effort rather than fail-closed.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hardware choice</strong></td>
+                        <td>The standard JVM plus PostgreSQL or embedded-H2 deployment does not require confidential-computing hardware.</td>
+                        <td>Optional AWS Nitro and GCP CVM profiles are hardware-specific. Local model inference still depends on the configured model and host resources.</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="callout warning">
+                <div class="callout-title">Positioning Statement</div>
+                <div class="callout-text">
+                    These controls can support local and on-prem governance without mandatory enclave hardware. 
+                    The repository and this benchmark contain no head-to-head OPAQUE evaluation, security certification, 
+                    or evidence of feature parity.
+                </div>
+            </div>
+            
+            <p class="note">
+                The benchmark measures synthetic I/O scheduling only; it does not test policy enforcement, isolation, 
+                database recovery, or regulatory controls.
+            </p>
+            
+            <p class="note">
+                <strong>Implementation sources:</strong> Backend configuration, NetworkPolicyService, ConditionalRouter, 
+                StorageService, and GatewayPrincipal.
+            </p>
+            
+            <h3>Optional Compliance Profiles</h3>
+            
+            <div class="governance-grid">
+                <div class="governance-card">
+                    <h4>AWS Nitro Enclaves</h4>
+                    <p>
+                        Isolated microVM with encrypted memory (CPU-exclusive), vTPM attestation, and cryptographic proof 
+                        of code identity. Profile: <code>aws-nitro</code>
+                    </p>
+                </div>
+                <div class="governance-card">
+                    <h4>GCP Confidential VM</h4>
+                    <p>
+                        CPU-protected memory with Shielded VM and vTPM 2.0. Profile: <code>gcp-cvm</code>
+                    </p>
+                </div>
+                <div class="governance-card">
+                    <h4>Audit Logging</h4>
+                    <p>
+                        Full request/action logging with correlation IDs for GDPR, HIPAA, and SOC2 compliance. 
+                        Optional PII detection and redaction.
+                    </p>
+                </div>
+                <div class="governance-card">
+                    <h4>Encryption at Rest</h4>
+                    <p>
+                        AES-256-GCM for sensitive data. Keys stored in secure vaults or environment variables, 
+                        never baked into images.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page 3: Historical Benchmark -->
+        <div class="page">
+            <div class="header">
+                <div class="logo">OPENTRON</div>
+                <div class="page-number">3</div>
+            </div>
+            
+            <h2>Previous Benchmark (Historical)</h2>
+            
+            <p class="note" style="margin-bottom: 15px;">
+                Raw data timestamp: 29 Jul 2024, 00:00 UTC. These results are retained for context, not pooled with the current run.
+            </p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Concurrency</th>
+                        <th>Java Successful</th>
+                        <th>Java tasks/s</th>
+                        <th>Java p99 ms</th>
+                        <th>Python Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>100/100</td>
+                        <td>95.23</td>
+                        <td>142.15</td>
+                        <td>0/100 (connection refused)</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>100/100</td>
+                        <td>380.50</td>
+                        <td>156.87</td>
+                        <td>Not recorded</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>100/100</td>
+                        <td>520.75</td>
+                        <td>178.32</td>
+                        <td>0/100 (connection refused)</td>
+                    </tr>
+                    <tr>
+                        <td>20</td>
+                        <td>100/100</td>
+                        <td>890.25</td>
+                        <td>195.64</td>
+                        <td>Not recorded</td>
+                    </tr>
+                    <tr>
+                        <td>50</td>
+                        <td>100/100</td>
+                        <td>1,250.30</td>
+                        <td>201.45</td>
+                        <td>Not recorded</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="callout warning">
+                <div class="callout-title">Historical Data Caveats</div>
+                <div class="callout-text">
+                    The legacy JSON records five successful Java measurements and one Python connection-refused result 
+                    at concurrency 10 (0/100 tasks). Its zero-valued Python latency fields are placeholders, not measured 
+                    0 ms latency. The historical JSON contains no RAM measurements or hardware/resource-limit metadata.
+                </div>
+            </div>
+            
+            <p class="note">
+                The accompanying legacy Markdown report states a different generation date (29 Jul 2026) than the raw JSON 
+                timestamp (29 Jul 2024), and describes additional Python concurrency levels not present in the JSON. This 
+                section therefore uses only the raw JSON records; the two runs are not directly comparable.
+            </p>
+            
+            <h3>Sources</h3>
+            
+            <div class="sources">
+                <strong>Current:</strong> benchmarks/reproducible_benchmark_results.json and benchmarks/REPRODUCIBLE_BENCHMARK_REPORT.md.<br/>
+                <strong>Historical:</strong> benchmarks/benchmark_results.json; legacy narrative: benchmarks/BENCHMARK_REPORT.md.
+            </div>
+            
+            <h2>Conclusion</h2>
+            
+            <p class="note">
+                This benchmark demonstrates that OpenTron's Java 21 virtual-thread design achieves significantly higher 
+                throughput and lower tail latency than a FastAPI/Celery/Redis baseline at high concurrency levels, while 
+                maintaining comparable idle-state memory consumption. The results are specific to the workload characteristics 
+                tested (simulated I/O-bound tasks with 100 ms delay) and do not generalize to all possible deployment scenarios.
+            </p>
+            
+            <p class="note">
+                The governance building blocks documented on page 2 provide application-level control points for regulated 
+                deployments, including optional confidential-computing hardware support, audit logging, encryption, and 
+                typed-contract validation. Operators remain responsible for verifying that these controls meet their 
+                specific compliance requirements.
+            </p>
+            
+            <p class="note">
+                For full documentation, see:
+            </p>
+            
+            <div class="sources" style="margin-top: 15px;">
+                <strong>OpenTron Documentation:</strong><br/>
+                • Architecture: docs/architecture.md<br/>
+                • Security: docs/security.md<br/>
+                • API: docs/api.md<br/>
+                • Agents: docs/agents.md<br/>
+                • Benchmarks: benchmarks/reproducible_benchmark_results.json
+            </div>
+        </div>
+    </div>
+</body>
+</html>
