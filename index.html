@@ -230,6 +230,51 @@
 
         <!-- TAB 3: BENCHMARKS & PERFORMANCE -->
         <div id="content-benchmarks" class="tab-content hidden space-y-10">
+            <details class="group bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden">
+                <summary class="cursor-pointer list-none flex items-center justify-between gap-4 px-5 py-4 border-b border-slate-800 hover:bg-slate-800/40 transition">
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-bold text-white">Security Audit</h2>
+                        <p class="text-xs text-slate-400 mt-1">Complete OpenTron security audit report</p>
+                    </div>
+                    <span class="text-teal-400 text-xl transition-transform duration-200 group-open:rotate-45" aria-hidden="true">+</span>
+                </summary>
+                <div class="p-2 sm:p-4">
+                    <iframe
+                        title="OpenTron Security Audit"
+                        src="java/opentron-java/backend/audit/OpenTron_Security_Audit_Complete.html"
+                        class="w-full h-[75vh] min-h-[600px] rounded-xl border border-slate-800 bg-white"
+                        loading="lazy">
+                    </iframe>
+                </div>
+            </details>
+
+            <details class="group bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden">
+                <summary class="cursor-pointer list-none flex items-center justify-between gap-4 px-5 py-4 border-b border-slate-800 hover:bg-slate-800/40 transition">
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-bold text-white">Benchmark Executive Summary</h2>
+                        <p class="text-xs text-slate-400 mt-1">Executive overview of the reproducible benchmark results</p>
+                    </div>
+                    <span class="text-teal-400 text-xl transition-transform duration-200 group-open:rotate-45" aria-hidden="true">+</span>
+                </summary>
+                <div class="p-2 sm:p-4">
+                    <iframe
+                        title="OpenTron Benchmark Executive Summary"
+                        src="benchmarks/OpenTron_Benchmark_Executive_Summary.html"
+                        class="w-full h-[75vh] min-h-[600px] rounded-xl border border-slate-800 bg-white"
+                        loading="lazy">
+                    </iframe>
+                </div>
+            </details>
+
+            <details class="group bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden">
+                <summary class="cursor-pointer list-none flex items-center justify-between gap-4 px-5 py-4 border-b border-slate-800 hover:bg-slate-800/40 transition">
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-bold text-white">Archive</h2>
+                        <p class="text-xs text-slate-400 mt-1">Previous benchmark content and historical results</p>
+                    </div>
+                    <span class="text-teal-400 text-xl transition-transform duration-200 group-open:rotate-45" aria-hidden="true">+</span>
+                </summary>
+                <div class="p-4 sm:p-6 space-y-10">
             <section id="latest-benchmark" class="space-y-6">
                 <div class="border-l-4 border-teal-500 pl-4">
                     <div class="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-3">
@@ -501,6 +546,8 @@
                     </table>
                 </div>
             </div>
+                </div>
+            </details>
         </div>
 
         <!-- TAB 4: BUSINESS & CONTACT FORM -->
