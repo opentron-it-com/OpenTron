@@ -144,6 +144,130 @@
             </div>
         </header>
 
+        <section id="byok-hybrid-mode" class="py-20 bg-slate-950 text-slate-100">
+  <div class="max-w-6xl mx-auto px-6">
+    <!-- Hero Header -->
+    <div class="max-w-3xl mb-16">
+      <span class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider uppercase rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+        BYOK Hybrid Mode &bull; OpenTron Java 21 Runtime
+      </span>
+      <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-white mb-6">
+        Frontier AI Reasoning Without Leaking Your IP—or Paying SaaS Token Markups.
+      </h2>
+      <p class="text-lg text-slate-300 leading-relaxed">
+        Most AI tools force a bad trade-off: send sensitive code and business logic to third-party cloud servers at a steep markup, or settle for small local models that stall on complex engineering tasks. <strong>JVMAI</strong> eliminates that compromise.
+      </p>
+    </div>
+
+    <!-- 3 Core Pillars -->
+    <div class="grid md:grid-cols-3 gap-6 mb-20">
+      <div class="p-6 rounded-xl bg-slate-900/80 border border-slate-800">
+        <h3 class="text-lg font-semibold text-white mb-2">Bring Your Own Keys</h3>
+        <p class="text-sm text-emerald-400 font-medium mb-3">Zero Markup &bull; Zero Lock-In</p>
+        <p class="text-slate-300 text-sm leading-relaxed">
+          Plug in your own Anthropic and Google Gemini API keys directly. Keys stay encrypted locally on your machine—never routed through a middleman proxy.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-xl bg-slate-900/80 border border-slate-800">
+        <h3 class="text-lg font-semibold text-white mb-2">CJAE Confidential Scrubbing</h3>
+        <p class="text-sm text-emerald-400 font-medium mb-3">Pre-Egress Redaction &amp; Encryption</p>
+        <p class="text-slate-300 text-sm leading-relaxed">
+          Before any complex prompt escalates to the cloud, the Confidential AI Engine (CJAE) scans, redacts sensitive identifiers and secrets, and encrypts the outbound request.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-xl bg-slate-900/80 border border-slate-800">
+        <h3 class="text-lg font-semibold text-white mb-2">Prompt-Cached Savings</h3>
+        <p class="text-sm text-emerald-400 font-medium mb-3">Up to 80–90% Lower Cloud Spend</p>
+        <p class="text-slate-300 text-sm leading-relaxed">
+          Routine tasks run free on preloaded local Ollama models. Only <code>COMPLEX</code> and <code>EXTREME</code> tasks escalate—using prompt caching and bounded single-pass execution.
+        </p>
+      </div>
+    </div>
+
+    <!-- 5-Step Request Flow -->
+    <div class="mb-20">
+      <h3 class="text-2xl font-bold text-white mb-8">How a Request Flows in BYOK Hybrid Mode</h3>
+      <ol class="grid md:grid-cols-5 gap-4">
+        <li class="p-5 rounded-xl bg-slate-900 border border-slate-800">
+          <span class="text-xs font-mono text-emerald-400">STEP 01</span>
+          <h4 class="font-semibold text-white mt-1 mb-2">Local Complexity Triage</h4>
+          <p class="text-xs text-slate-400 leading-relaxed"><code>Qwen3:4b</code> classifies domain and complexity (<code>SIMPLE</code>, <code>COMPLEX</code>, <code>EXTREME</code>) in milliseconds at $0 API cost.</p>
+        </li>
+        <li class="p-5 rounded-xl bg-slate-900 border border-slate-800">
+          <span class="text-xs font-mono text-emerald-400">STEP 02</span>
+          <h4 class="font-semibold text-white mt-1 mb-2">Routine Stays Local</h4>
+          <p class="text-xs text-slate-400 leading-relaxed"><code>SIMPLE</code> tasks execute directly on warm Ollama weights in RAM/VRAM—zero cloud egress, zero per-token spend.</p>
+        </li>
+        <li class="p-5 rounded-xl bg-slate-900 border border-slate-800">
+          <span class="text-xs font-mono text-emerald-400">STEP 03</span>
+          <h4 class="font-semibold text-white mt-1 mb-2">CJAE Scrubs &amp; Encrypts</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">Before cloud escalation, CJAE redacts secrets and enforces workspace boundaries prior to calling Anthropic or Gemini.</p>
+        </li>
+        <li class="p-5 rounded-xl bg-slate-900 border border-slate-800">
+          <span class="text-xs font-mono text-emerald-400">STEP 04</span>
+          <h4 class="font-semibold text-white mt-1 mb-2">Cached Single-Pass</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">Prompt caching avoids re-billing repeated context while hard loop guardrails block runaway agent retries.</p>
+        </li>
+        <li class="p-5 rounded-xl bg-slate-900 border border-slate-800">
+          <span class="text-xs font-mono text-emerald-400">STEP 05</span>
+          <h4 class="font-semibold text-white mt-1 mb-2">Encrypted Audit Trail</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">Token counts, cache savings, model routes, and hardware metrics are logged locally with AES-256-GCM encryption.</p>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Operating Modes Comparison Table -->
+    <div>
+      <h3 class="text-2xl font-bold text-white mb-6">Operating Modes: 100% Local vs. BYOK Hybrid</h3>
+      <div class="overflow-x-auto rounded-xl border border-slate-800">
+        <table class="w-full text-left border-collapse text-sm">
+          <thead>
+            <tr class="bg-slate-900 text-slate-200 border-b border-slate-800">
+              <th class="py-4 px-5 font-semibold">Capability</th>
+              <th class="py-4 px-5 font-semibold">100% Local Ollama Mode</th>
+              <th class="py-4 px-5 font-semibold text-emerald-400">BYOK Hybrid Mode (Local + Cloud)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800 bg-slate-950/60 text-slate-300">
+            <tr>
+              <td class="py-4 px-5 font-medium text-white">Best For</td>
+              <td class="py-4 px-5">Air-gapped environments, strict IP/compliance workloads, offline work</td>
+              <td class="py-4 px-5">Complex engineering, multi-file root-cause analysis, frontier reasoning</td>
+            </tr>
+            <tr>
+              <td class="py-4 px-5 font-medium text-white">Where Models Run</td>
+              <td class="py-4 px-5">100% on-device via local Ollama (<code>127.0.0.1:11434</code>)</td>
+              <td class="py-4 px-5">Routine tasks local (Ollama); <code>COMPLEX</code>/<code>EXTREME</code> escalated to Anthropic/Gemini</td>
+            </tr>
+            <tr>
+              <td class="py-4 px-5 font-medium text-white">Data Privacy &amp; Egress</td>
+              <td class="py-4 px-5">Zero external network calls</td>
+              <td class="py-4 px-5">CJAE redacts sensitive data before any outbound cloud call</td>
+            </tr>
+            <tr>
+              <td class="py-4 px-5 font-medium text-white">API Cost &amp; Billing</td>
+              <td class="py-4 px-5">$0 / token (hardware-only)</td>
+              <td class="py-4 px-5">Direct provider rates (no middleman markup) + prompt caching + local offload</td>
+            </tr>
+            <tr>
+              <td class="py-4 px-5 font-medium text-white">Runaway Loop Protection</td>
+              <td class="py-4 px-5">Bounded local execution</td>
+              <td class="py-4 px-5">Hard single-pass &amp; quota guardrails prevent circular token burn</td>
+            </tr>
+            <tr>
+              <td class="py-4 px-5 font-medium text-white">Storage &amp; Audit Security</td>
+              <td class="py-4 px-5">AES-256-GCM at rest + local trace logs</td>
+              <td class="py-4 px-5">AES-256-GCM at rest + encrypted local key storage + full per-call cost telemetry</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
         <!-- NAVIGATION TABS (Clean wrap layout) -->
         <div class="border-b border-slate-800 flex flex-wrap justify-center items-center gap-2 sm:gap-4 pb-1">
             <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn active px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-400 border-b-2 border-transparent transition hover:text-teal-400 rounded-lg">
